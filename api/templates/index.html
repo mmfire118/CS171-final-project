@@ -99,24 +99,24 @@
                             </div>
                         </div>
                         <div id="top-row" class="row">
-                            <div class="col-12 col-md-6 text-center">
+                            <div class="col-12 col-md-6 text-center mt-2">
                                 <div id="hook-div">
                                     Hook goes here (Sketch 9)
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 text-center">
+                            <div class="col-12 col-md-6 text-center mt-2">
                                 <div id="rising-insight">
                                     Rising insight goes here (Sketch 10/12)
                                 </div>
                             </div>
                         </div>
-                        <div id="bot-row" class="row mt-2">
-                            <div class="col-12 col-md-6 text-center">
+                        <div id="bot-row" class="row">
+                            <div class="col-12 col-md-6 text-center mt-2">
                                 <div id="main-message">
                                     Main message goes here (Sketch 2/13)
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 text-center">
+                            <div class="col-12 col-md-6 text-center mt-2">
                                 <div id="solution-div">
                                     Solution goes here (Sketch 5)
                                 </div>
@@ -140,6 +140,7 @@
     <script src="{{ url_for('static', filename='app-assets/vendors/js/extensions/toastr.min.js') }}"></script>
     <script src="{{ url_for('static', filename='app-assets/vendors/js/extensions/sweetalert2.all.min.js') }}"></script>
     <script src="{{ url_for('static', filename='app-assets/vendors/js/forms/cleave/cleave.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/d3.v7.min.js') }}"></script>
     <!-- END: Page Vendor JS-->
 
     <!-- BEGIN: Theme JS-->
@@ -152,6 +153,8 @@
     <!-- END: Page JS-->
 
     <script nonce="{{ csp_nonce() }}">
+        window.data_file_path = "{{ url_for('static', filename='data/out.csv') }}"
+
         $(window).on('load', function() {
             if (feather) {
                 feather.replace({
@@ -172,6 +175,11 @@
             });
         {% endif %}
     </script>
+
+    <!-- BEGIN: D3 -->
+    <script src="{{ url_for('static', filename='assets/js/line.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/scripts.js') }}"></script>
+    <!-- END: D3 -->
 </body>
 <!-- END: Body-->
 

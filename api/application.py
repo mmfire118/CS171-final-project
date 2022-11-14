@@ -75,6 +75,7 @@ talisman = Talisman(
             SELF,
             "stackpath.bootstrapcdn.com",
             "'unsafe-inline'",
+            "'unsafe-eval'"
         ],
     },
 )
