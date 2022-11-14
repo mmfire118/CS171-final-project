@@ -124,3 +124,32 @@ body.swal2-shown.swal2-height-auto {
 .blockOverlay, .blockElement, .blockPage {
     z-index: 2000!important;
 }
+
+#hook-div {
+	background-color: yellow;
+	margin-bottom: 50px;
+	height: 350px;
+}
+
+#rising-insight {
+	background-color: green;
+	margin-top: 100px;
+	height: 300px;
+}
+
+#main-message {
+	background-color: deeppink;
+	margin-bottom: 50px;
+	height: 350px;
+}
+
+#solution-div {
+	background-color: orange;
+	margin-top: 50px;
+	height: 350px;
+}
+
+.placeholder-text {
+	font-size: 200%;
+	color: black;
+}
