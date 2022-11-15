@@ -48,4 +48,8 @@ function initMainPage(dataArray) {
 
   // init line
   myLineVis = new LineVis('main-message', dataArray[0])
+
+  // init treemap
+  myTreeMap = new TreeMap('rising-insight', dataArray[0])
 }
+
