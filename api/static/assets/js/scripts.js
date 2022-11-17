@@ -47,9 +47,13 @@ function initMainPage(dataArray) {
   console.log('check out the data', dataArray[0]);
 
   // init line
-  myLineVis = new LineVis('main-message', dataArray[0])
+  myLineVis = new LineVis('main-message', "main-message-select", dataArray[0])
 
   // init treemap
   myTreeMap = new TreeMap('rising-insight', dataArray[0])
+}
+
+function mainMessageCatChange() {
+    myLineVis.filterData();
 }
 
