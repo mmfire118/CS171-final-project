@@ -136,8 +136,9 @@ body.swal2-shown.swal2-height-auto {
 }
 
 #main-message {
-	background-color: deeppink;
-	height: 350px;
+	height: 500px;
+	margin-top: 40px;
+	margin-bottom: 40px;
 }
 
 #solution-div {
