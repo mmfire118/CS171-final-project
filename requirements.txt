@@ -20,3 +20,4 @@ twilio==7.9.3
 webauthn==1.5.2
 python-dateutil==2.8.2
 python-dotenv==0.21.0
+pandas==1.5.1

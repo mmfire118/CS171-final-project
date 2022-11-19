@@ -2,4 +2,9 @@
 **/node_modules
 **/__pycache__
 /scripts/bulk/**
-/scripts/test/**
+/scripts/bulk_test/**
+/scripts/meta/**
+/scripts/meta_test/**
+/scripts/reviews/**
+/scripts/reviews_test/**
+**/.DS_Store
