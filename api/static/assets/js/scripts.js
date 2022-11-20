@@ -4,7 +4,8 @@ let myLineVis
 // load data using promises
 let promises = [
   d3.csv(window.data_file_path),
-  d3.json(window.word_data_file_path)
+  d3.json(window.word_data_file_path),
+  d3.json(window.helpful_data_path)
 ];
 
 $.blockUI({
@@ -55,5 +56,8 @@ function initMainPage(dataArray) {
 
   //init Bubbles
   myBubbleGraph = new BubbleVis('hook-div', dataArray[1])
+
+  //init Helpful
+  myHelpfulChart = new HelpfulChart('helpful-div', dataArray[2])
 }
 

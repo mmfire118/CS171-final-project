@@ -162,6 +162,7 @@
     <script nonce="{{ csp_nonce() }}">
         window.data_file_path = "{{ url_for('static', filename='data/out.csv') }}"
         window.word_data_file_path = "{{ url_for('static', filename='data/wordCount.json') }}"
+        window.helpful_data_path = "{{ url_for('static', filename='data/helpful.json') }}"
 
         $(window).on('load', function() {
             if (feather) {
@@ -188,6 +189,7 @@
     <script src="{{ url_for('static', filename='assets/js/line.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/treemap.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/bubbles.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/helpfulChart.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/scripts.js') }}"></script>
     <!-- END: D3 -->
 </body>
