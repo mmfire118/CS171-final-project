@@ -4,6 +4,7 @@ let myLineVis
 // load data using promises
 let promises = [
   d3.csv(window.data_file_path),
+  d3.json(window.word_data_file_path)
 ];
 
 $.blockUI({
@@ -51,5 +52,8 @@ function initMainPage(dataArray) {
 
   // init treemap
   myTreeMap = new TreeMap('rising-insight', dataArray[0])
+
+  //init Bubbles
+  myBubbleGraph = new BubbleVis('hook-div', dataArray[1])
 }
 
