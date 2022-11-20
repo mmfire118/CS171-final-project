@@ -48,7 +48,7 @@ for count, filename in enumerate(f, start=1):
     df_list[category] = {}
 
     for count, rating in enumerate(itemizedList, start=1):
-        df_list[category][count] = rating['vote'].sum()
-    
+        df_list[category][count] = int(rating['vote'].sum())
+
 with open('helpful.json', 'w') as fp:
     json.dump(df_list, fp)
