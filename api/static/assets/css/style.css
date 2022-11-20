@@ -127,14 +127,15 @@ body.swal2-shown.swal2-height-auto {
 
 #hook-div {
 	background-color: yellow;
-	height: 350px;
+	height: 700px;
 }
 
 #rising-insight {
 	background-color: green;
-	height: 350px;
+	height: 700px;
 }
 
+<<<<<<< HEAD
 .line-graph {
 	height: 500px;
 	width: 100%;
@@ -146,4 +147,19 @@ body.swal2-shown.swal2-height-auto {
 	font-size: 90%;
 	fill: #A9A9A9;
 	font-weight: bold;
+=======
+#main-message {
+	background-color: deeppink;
+	height: 700px;
+}
+
+#solution-div {
+	background-color: orange;
+	height: 700px;
+}
+
+#helpful-div{
+	background-color: orange;
+	height: 700px;
+>>>>>>> origin/main
 }
