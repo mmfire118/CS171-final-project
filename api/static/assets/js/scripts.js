@@ -1,5 +1,5 @@
 // init global variables & switches
-let myLineVis
+let myLineVis, myLineVis2;
 
 // load data using promises
 let promises = [
@@ -43,11 +43,22 @@ Promise.all(promises)
 // initMainPage
 function initMainPage(dataArray) {
 
-  // log data
-  console.log('check out the data', dataArray[0]);
+    let parseDate = d3.timeParse("%Y-%m-%d");
+
+    dataArray[0].forEach(function(part, index, theArray) {
+        dataArray[0][index].Timestamp = parseDate(theArray[index].Timestamp);
+    })
 
   // init line
-  myLineVis = new LineVis('main-message', "main-message-select", dataArray[0])
+  myLineVis = new LineVis('main-message', "main-message-select",
+      "How the Number of Item Reviews By Category Changes Over Time",
+      "sum-reviews", dataArray[0]);
+
+  console.log("starting vis 2");
+
+  myLineVis2 = new LineVis('solution-div', "solution-select",
+      "Phases of Interest: Distribution of the Average Item Rating By Category",
+      "avg-rating", dataArray[0])
 
   // init treemap
   myTreeMap = new TreeMap('rising-insight', dataArray[0])
@@ -57,3 +68,6 @@ function mainMessageCatChange() {
     myLineVis.filterData();
 }
 
+function solutionCatChange() {
+    myLineVis2.filterData();
+}

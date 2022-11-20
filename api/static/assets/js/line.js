@@ -1,8 +1,10 @@
 class LineVis {
-    constructor(parentElement, dropdownId, data){
+    constructor(parentElement, dropdownId, titleText, rollupFunction, data){
         this.parentElement = parentElement;
         this.dropdownId = dropdownId
         this.data = data;
+        this.rollupFunction = rollupFunction;
+        this.titleText = titleText;
 
         // date methods
         this.parseDate = d3.timeParse("%Y-%m-%d");
@@ -29,8 +31,9 @@ class LineVis {
         vis.svg.append('g')
             .attr('class', 'title bar-title')
             .append('text')
-            .text('Title for Linechart')
-            .attr('transform', `translate(${vis.width / 2}, 10)`)
+            .text(vis.titleText)
+            .attr('transform', vis.rollupFunction === "sum-reviews" ?
+                `translate(${vis.width / 2}, 10)` : `translate(${vis.width / 2}, ${vis.height-40})`)
             .attr('text-anchor', 'middle')
             .attr("fill", "white");
 
@@ -60,18 +63,57 @@ class LineVis {
             .attr("class", "x-axis axis")
             .attr("transform", "translate(0," + vis.height + ")");
 
-        this.wrangleData();
+        vis.minimumDate = d3.min(vis.data, function(d){ return d.Timestamp });
+        vis.maximumDate = d3.max(vis.data, function(d){ return d.Timestamp });
+
+        if (vis.rollupFunction == "avg-rating"){
+            vis.wrangleAvgRatingData();
+        }
+        else if (vis.rollupFunction == "sum-reviews"){
+            vis.wrangleNumReviewsData();
+        }
+        else {
+            console.log("ERROR: Invalid rollupFunction value");
+        }
     }
 
-    wrangleData(){
-        let vis = this
+    wrangleAvgRatingData() {
+        let vis = this;
 
-        vis.data.forEach(function(part, index, theArray) {
-            vis.data[index].Timestamp = vis.parseDate(theArray[index].Timestamp);
-        })
+        let rollupData = d3.rollup(vis.data, v => d3.mean(v, d => d.Rating), d => d.Category, d => d.Timestamp)
 
-        vis.minimumDate = d3.min(vis.data, function(d){ return d.Timestamp })
-        vis.maximumDate = d3.max(vis.data, function(d){ return d.Timestamp })
+        vis.keys = d3.map(rollupData.keys(), d=>d);
+        vis.data = []
+
+        vis.keys.forEach(function (key) {
+            let daily_data = Array.from(rollupData.get(key), ([key, value]) => ({
+                timestamp: key,
+                value: value
+            }));
+            daily_data.sort((a,b) => a.timestamp - b.timestamp);
+
+            let monthly_data = d3.rollups(daily_data, v => d3.mean(v, d => d.value), function (d) {
+                let ts = vis.formatDate(d.timestamp).toString();
+                return ts.split('-').slice(0, 2).join('-');
+            });
+
+            monthly_data = d3.map(monthly_data, d => ({timestamp: vis.parseDate(d[0]+"-01"), value: d[1]}));
+
+            vis.data.push({category: key, dates: monthly_data});
+        });
+
+        vis.dropdownOptions = d3.select("#"+vis.dropdownId).selectAll("option")
+            .data(vis.keys.sort())
+            .enter()
+            .append("option")
+            .text(d => d)
+            .attr(d => d);
+
+        vis.filterData();
+    }
+
+    wrangleNumReviewsData(){
+        let vis = this;
 
         let rollupData = d3.rollup(vis.data, v => v.length, d => d.Category, d => d.Timestamp)
 
@@ -158,18 +200,24 @@ class LineVis {
             .y(d => vis.y(d.value))
             .curve(d3.curveNatural);
 
-        vis.svg.selectAll(".line")
-            .data(vis.displayData, d => d.category)
-            .enter()
+        let lines = vis.svg.selectAll(".line")
+            .data(vis.displayData, d => d.category);
+
+        lines.exit()
+            .transition()
+            .duration(400)
+            .attr("stroke", "rgba(255,255,255,0)")
+            .remove();
+
+        lines.enter()
             .append("path")
             .attr("class", "line")
+            .attr("stroke", "rgba(255,255,255,0)")
             .transition()
             .duration(800)
             .attr("d", d => lineInside(d.dates))
             .attr("fill", "none")
             .attr("stroke", d => color(d.category))
             .attr("stroke-width", 1);
-
-        vis.svg.selectAll(".line").exit().remove();
     }
 }

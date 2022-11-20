@@ -135,13 +135,9 @@ body.swal2-shown.swal2-height-auto {
 	height: 350px;
 }
 
-#main-message {
+.line-graph {
 	height: 500px;
+	width: 100%;
 	margin-top: 40px;
 	margin-bottom: 40px;
-}
-
-#solution-div {
-	background-color: orange;
-	height: 350px;
 }
