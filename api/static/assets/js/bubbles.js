@@ -48,26 +48,14 @@ class BubbleVis {
                 if(vis.data[category]["2"][key]) {
                    let updatedValue = vis.data[category]["1"][key] + vis.data[category]["2"][key];
                    categoryDataNegative[key] = updatedValue;
-                //    categoryDataNegative.push({
-                //     Word: key,
-                //     Value: updatedValue
-                //    })
                 } else {
                     categoryDataNegative[key] = vis.data[category]["1"][key]
-                    // categoryDataNegative.push({
-                    //     Word: key,
-                    //     Value: vis.data[category]["1"][key]
-                    // })
                 }
             }
     
             for(var key in vis.data[category]["2"]) {
                 if(!vis.data[category]["1"][key]) {
                     categoryDataNegative[key] = vis.data[category]["2"][key]
-                    // categoryDataNegative.push({
-                    //     Word: key,
-                    //     Value: vis.data[category]["2"][key]
-                    // })
                 }
             }
 
@@ -75,16 +63,8 @@ class BubbleVis {
                 if(filteredDataNegative[key]) {
                     let updatedValue = filteredDataNegative[key] + categoryDataNegative[key];
                     filteredDataNegative[key] = updatedValue;
-                    // filteredDataNegative.push({
-                    //  Word: key,
-                    //  Value: updatedValue
-                    // })
                  } else {
                     filteredDataNegative[key] = categoryDataNegative[key]
-                    // filteredDataNegative.push({
-                    //      Word: key,
-                    //      Value: categoryDataNegative[key].Value
-                    //  })
                  }
             }
         }
@@ -96,6 +76,8 @@ class BubbleVis {
                 Value: filteredDataNegative[key]
             })
         }
+
+        //TODO: REMOVE STUPID WORDS
 
         filteredNegativeDataArray.sort((a, b) => b.Value - a.Value)
 
