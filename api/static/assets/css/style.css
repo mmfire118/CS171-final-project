@@ -127,20 +127,25 @@ body.swal2-shown.swal2-height-auto {
 
 #hook-div {
 	background-color: yellow;
-	height: 350px;
+	height: 700px;
 }
 
 #rising-insight {
 	background-color: green;
-	height: 350px;
+	height: 700px;
 }
 
 #main-message {
 	background-color: deeppink;
-	height: 350px;
+	height: 700px;
 }
 
 #solution-div {
 	background-color: orange;
-	height: 350px;
+	height: 700px;
+}
+
+#helpful-div{
+	background-color: orange;
+	height: 700px;
 }
