@@ -101,7 +101,7 @@
                         <div id="top-row" class="row">
                             <div class="col-12 text-center mt-2">
                                 <h3 class="mt-50">What are the most common words used in negative or positive reviews?</h3>
-                                <p class="mb-1">This is a compilation of the most common words across our set of Amazon reviews. (Note that the visualization does not include common words and articles such as “the,” “and,” etc.)</p>
+                                <p class="mb-1">This is a compilation of the most common words across our set of Amazon reviews.</p>
                                 <div id="hook-div">
                                 
                                 </div>
@@ -182,6 +182,18 @@
         window.helpful_data_path = "{{ url_for('static', filename='data/helpful.json') }}"
 
         $(window).on('load', function() {
+            $.blockUI({
+                message: '<div class="d-flex justify-content-center align-items-center"><p class="me-50 mb-0">Please wait...</p> <div class="spinner-grow spinner-grow-sm text-white" role="status"></div> </div>',
+                css: {
+                    backgroundColor: 'transparent',
+                    border: '0',
+                },
+                overlayCSS: {
+                    backgroundColor: '#fff',
+                    opacity: 0.8
+                },
+            });
+
             if (feather) {
                 feather.replace({
                     width: 14,

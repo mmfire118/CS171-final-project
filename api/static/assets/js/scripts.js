@@ -8,18 +8,6 @@ let promises = [
   d3.json(window.helpful_data_path)
 ];
 
-$.blockUI({
-  message: '<div class="d-flex justify-content-center align-items-center"><p class="me-50 mb-0">Please wait...</p> <div class="spinner-grow spinner-grow-sm text-white" role="status"></div> </div>',
-  css: {
-      backgroundColor: 'transparent',
-      border: '0',
-  },
-  overlayCSS: {
-      backgroundColor: '#fff',
-      opacity: 0.8
-  },
-});
-
 Promise.all(promises)
   .then(function (data) {
       $.unblockUI();
