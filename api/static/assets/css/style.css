@@ -135,7 +135,6 @@ body.swal2-shown.swal2-height-auto {
 	height: 700px;
 }
 
-<<<<<<< HEAD
 .line-graph {
 	height: 500px;
 	width: 100%;
@@ -147,7 +146,8 @@ body.swal2-shown.swal2-height-auto {
 	font-size: 90%;
 	fill: #A9A9A9;
 	font-weight: bold;
-=======
+}
+
 #main-message {
 	background-color: deeppink;
 	height: 700px;
@@ -161,5 +161,4 @@ body.swal2-shown.swal2-height-auto {
 #helpful-div{
 	background-color: orange;
 	height: 700px;
->>>>>>> origin/main
 }

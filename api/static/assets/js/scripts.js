@@ -57,8 +57,6 @@ function initMainPage(dataArray) {
       "Number of Item Reviews (by month)",
       "sum-reviews", dataArray[0]);
 
-  console.log("starting vis 2");
-
   myLineVis2 = new LineVis('solution-div', "solution-select",
       "Phases of Interest: Distribution of the Average Item Rating By Category",
       "Average Review Rating (by month)",
