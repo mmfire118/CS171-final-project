@@ -126,12 +126,10 @@ body.swal2-shown.swal2-height-auto {
 }
 
 #hook-div {
-	background-color: yellow;
 	height: 700px;
 }
 
 #rising-insight {
-	background-color: green;
 	height: 700px;
 }
 
@@ -144,21 +142,18 @@ body.swal2-shown.swal2-height-auto {
 
 .axis-text {
 	font-size: 90%;
-	fill: #A9A9A9;
+	fill: azure;
 	font-weight: bold;
 }
 
 #main-message {
-	background-color: deeppink;
 	height: 700px;
 }
 
 #solution-div {
-	background-color: orange;
 	height: 700px;
 }
 
 #helpful-div{
-	background-color: orange;
-	height: 700px;
+	height: 1000px;
 }

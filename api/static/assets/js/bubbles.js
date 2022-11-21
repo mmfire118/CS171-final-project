@@ -22,15 +22,6 @@ class BubbleVis {
             .attr("height", vis.height)
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
 
-        // add title
-        vis.svg.append('g')
-            .attr('class', 'title')
-            .attr('id', 'map-title')
-            .append('text')
-            .text('Covid Case Statistics in the U.S.')
-            .attr('transform', `translate(${vis.width / 2}, 20)`)
-            .attr('text-anchor', 'middle');
-
         vis.wrangleData();
     }
     //Top 25 per category
@@ -87,7 +78,7 @@ class BubbleVis {
         vis.displayData = {
             "children": filteredNegativeDataArray.slice(0, 25)
         };
-        console.log(vis.displayData)
+        //console.log(vis.displayData)
 
         vis.updateVis();
     }

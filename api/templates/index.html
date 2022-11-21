@@ -91,20 +91,24 @@
                                 <div class="w-100 text-center">
                                     <div class="row">
                                         <div class="col-12 p-md-0">
-                                            <h1 class="mb-2">Coming Soon!</h1>
+                                            <h1 class="mb-2">Welcome!</h1>
                                         </div>
                                     </div>
-                                    <img class="img-fluid" src="{{ url_for('static', filename='app-assets/images/pages/coming-soon-dark.svg') }}" alt="waitlist">
+                                    <p class="mb-1">As the Internet and mobile phones have become popular, getting a request to leave reviews for online services has become a regular part of many people’s lives. In order to gauge how the general population interacts with online services, we decided to look at how the characteristics of reviews for a specific company changed over time. We chose Amazon, as it is a massive corporation: the company employs roughly 1.6 million people and it reported $116.4 billion dollars in revenue over just the first three months of 2022 alone. We took 2% of the entries stored in a database containing over 233.1 million Amazon reviews and analyzed them in order to identify prominent trends in the data. Experiment with some of our visualizations below, and see what you can pick out!</p>
                                 </div>
                             </div>
                         </div>
                         <div id="top-row" class="row">
                             <div class="col-12 text-center mt-2">
+                                <h3 class="mt-50">What are the most common words used in negative or positive reviews?</h3>
+                                <p class="mb-1">This is a compilation of the most common words across our set of Amazon reviews. (Note that the visualization does not include common words and articles such as “the,” “and,” etc.)</p>
                                 <div id="hook-div">
                                 
                                 </div>
                             </div>
                             <div class="col-12 text-center mt-2">
+                                <h3 class="mt-50">Do reviews with higher numbers of words tend to be more positive or negative?</h3>
+                                <p class="mb-1">This is a visualization that shows the average length (in words) of reviews for a given category. The categories with the most reviews don’t necessarily have the longest reviews. Generally, one can assume that longer reviews mean more polarizing items, as a person who writes an in-depth review concerning some object likely has strong feelings about it, whether positive or negative.</p>
                                 <div id="rising-insight">
                                 
                                 </div>
@@ -112,22 +116,30 @@
                         </div>
                         <div id="mid-row" class="row">
                             <div class="col-12 text-center mt-2">
-                                <div id="main-message" class="line-graph">
-                                    <select id="main-message-select" name="category-select" onchange="mainMessageCatChange()">
+                                <h3 class="mt-50">How the number of item reviews by category changes over time?</h3>
+                                <p class="mb-1">This is a visualization that shows the average rating for objects in a given category over time. Generally, these average ratings fluctuate around values close to 4.5, and stay relatively constant over time, especially as the number of ratings on the site increases. This suggests that the customer base as a whole is generally satisfied with the items they procure via Amazon.</p>
+                                <select id="main-message-select" class="form-select text-center mb-1" name="category-select" onchange="mainMessageCatChange()">
 
-                                    </select>
+                                </select>
+                                <div id="main-message" class="line-graph">
+                                    
                                 </div>
                             </div>
                             <div class="col-12 text-center mt-2">
-                                <div id="solution-div" class="line-graph">
-                                    <select id="solution-select" name="category-select" onchange="solutionCatChange()">
+                                <h3 class="mt-50">Phases of interest: distribution of the average item rating by category</h3>
+                                <p class="mb-1">This is a visualization that shows the distribution of the number of reviews in a given category over time. Note that, despite the category, the number of reviews tends to peak around 2016 and then decrease.</p>
+                                <select id="solution-select" class="form-select text-center mb-1" name="category-select" onchange="solutionCatChange()">
 
-                                    </select>
+                                </select>
+                                <div id="solution-div" class="line-graph">
+                                    
                                 </div>
                             </div>
                         </div>
                         <div id="bot-row" class="row">
                             <div class="col-12 text-center mt-2">
+                                <h3 class="mt-50">The distribution of "helpful" reviews</h3>
+                                <p class="mb-1">It seems that towards the end of the 2010s, people generally began to leave fewer reviews on Amazon products. This phenomenon was observed across virtually all categories on the site, and it was not accompanied by any change in how people generally rated the items they received. As such, it follows that people must be engaging less with Amazon as a whole; once they have ordered their products, they simply do not care to leave reviews.</p>
                                 <div id="helpful-div">
                                 
                                 </div>
