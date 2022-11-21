@@ -118,16 +118,6 @@
                             <div class="col-12 text-center mt-2">
                                 <h3 class="mt-50">How the number of item reviews by category changes over time?</h3>
                                 <p class="mb-1">This is a visualization that shows the average rating for objects in a given category over time. Generally, these average ratings fluctuate around values close to 4.5, and stay relatively constant over time, especially as the number of ratings on the site increases. This suggests that the customer base as a whole is generally satisfied with the items they procure via Amazon.</p>
-                                <select id="main-message-select" class="form-select text-center mb-1" name="category-select" onchange="mainMessageCatChange()">
-
-                                </select>
-                                <div id="main-message" class="line-graph">
-                                    
-                                </div>
-                            </div>
-                            <div class="col-12 text-center mt-2">
-                                <h3 class="mt-50">Phases of interest: distribution of the average item rating by category</h3>
-                                <p class="mb-1">This is a visualization that shows the distribution of the number of reviews in a given category over time. Note that, despite the category, the number of reviews tends to peak around 2016 and then decrease.</p>
                                 <select id="solution-select" class="form-select text-center mb-1" name="category-select" onchange="solutionCatChange()">
 
                                 </select>
@@ -135,11 +125,22 @@
                                     
                                 </div>
                             </div>
+                            <div class="col-12 text-center mt-2">
+                                <h3 class="mt-50">Phases of interest: distribution of the average item rating by category</h3>
+                                <p class="mb-1">This is a visualization that shows the distribution of the number of reviews in a given category over time. Note that, despite the category, the number of reviews tends to peak around 2016 and then decrease.</p>
+                                <p class="mb-1">It seems that towards the end of the 2010s, people generally began to leave fewer reviews on Amazon products. This phenomenon was observed across virtually all categories on the site, and it was not accompanied by any change in how people generally rated the items they received. As such, it follows that people must be engaging less with Amazon as a whole; once they have ordered their products, they simply do not care to leave reviews.</p>
+                                <select id="main-message-select" class="form-select text-center mb-1" name="category-select" onchange="mainMessageCatChange()">
+
+                                </select>
+                                <div id="main-message" class="line-graph">
+                                    
+                                </div>
+                            </div>
                         </div>
                         <div id="bot-row" class="row">
                             <div class="col-12 text-center mt-2">
                                 <h3 class="mt-50">The distribution of "helpful" reviews</h3>
-                                <p class="mb-1">It seems that towards the end of the 2010s, people generally began to leave fewer reviews on Amazon products. This phenomenon was observed across virtually all categories on the site, and it was not accompanied by any change in how people generally rated the items they received. As such, it follows that people must be engaging less with Amazon as a whole; once they have ordered their products, they simply do not care to leave reviews.</p>
+                                <p class="mb-1">This is a visualization that shows the summed number of helpful ratings for each average rating.</p>
                                 <div id="helpful-div">
                                 
                                 </div>
