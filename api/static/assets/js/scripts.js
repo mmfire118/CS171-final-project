@@ -53,12 +53,10 @@ function initMainPage(dataArray) {
 
   // init line
   myLineVis = new LineVis('main-message', "main-message-select",
-      "How the Number of Item Reviews By Category Changes Over Time",
       "Number of Item Reviews (by month)",
       "sum-reviews", dataArray[0]);
 
   myLineVis2 = new LineVis('solution-div', "solution-select",
-      "Phases of Interest: Distribution of the Average Item Rating By Category",
       "Average Review Rating (by month)",
       "avg-rating", dataArray[0])
 

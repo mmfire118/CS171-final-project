@@ -1,10 +1,9 @@
 class LineVis {
-    constructor(parentElement, dropdownId, titleText, yAxisText, rollupFunction, data){
+    constructor(parentElement, dropdownId, yAxisText, rollupFunction, data){
         this.parentElement = parentElement;
         this.dropdownId = dropdownId
         this.data = data;
         this.rollupFunction = rollupFunction;
-        this.titleText = titleText;
         this.yAxisText = yAxisText;
 
         // date methods
@@ -27,16 +26,6 @@ class LineVis {
             .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
             .append('g')
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
-        
-        // add title
-        vis.svg.append('g')
-            .attr('class', 'title bar-title')
-            .append('text')
-            .text(vis.titleText)
-            .attr('transform', vis.rollupFunction === "sum-reviews" ?
-                `translate(${vis.width / 2}, 10)` : `translate(${vis.width / 2}, ${vis.height-40})`)
-            .attr('text-anchor', 'middle')
-            .attr("fill", "white");
 
         // add x axis text
         vis.svg.append('g')
