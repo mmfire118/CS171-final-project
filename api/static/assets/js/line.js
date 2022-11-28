@@ -91,12 +91,16 @@ class LineVis {
         vis.keys = d3.map(rollupData.keys(), d=>d);
         vis.data = []
 
+        let all_dates_daily = []
+
         vis.keys.forEach(function (key) {
             let daily_data = Array.from(rollupData.get(key), ([key, value]) => ({
                 timestamp: key,
                 value: value
             }));
             daily_data.sort((a,b) => a.timestamp - b.timestamp);
+
+            all_dates_daily = all_dates_daily.concat(daily_data);
 
             let monthly_data = d3.rollups(daily_data, v => d3.mean(v, d => d.value), function (d) {
                 let ts = vis.formatDate(d.timestamp).toString();
@@ -108,8 +112,20 @@ class LineVis {
             vis.data.push({category: key, dates: monthly_data});
         });
 
+        // Averaging all dates for "Total Category"
+        vis.avg_all_ratings_monthly = d3.rollups(all_dates_daily, v => d3.mean(v, d => d.value), function (d) {
+            let ts = vis.formatDate(d.timestamp).toString();
+            return ts.split('-').slice(0, 2).join('-');
+        });
+        vis.avg_all_ratings_monthly = d3.map(vis.avg_all_ratings_monthly, d => ({timestamp: vis.parseDate(d[0]+"-01"), value: d[1]}));
+        vis.avg_all_ratings_monthly.sort((a,b) => a.timestamp - b.timestamp);
+
+        vis.keys.sort();
+
+        vis.keys.splice(0, 0, "Total (across all categories)");
+
         vis.dropdownOptions = d3.select("#"+vis.dropdownId).selectAll("option")
-            .data(vis.keys.sort())
+            .data(vis.keys)
             .enter()
             .append("option")
             .text(d => d)
@@ -143,8 +159,12 @@ class LineVis {
             vis.data.push({category: key, dates: monthly_data});
         });
 
+        vis.keys.sort();
+
+        vis.keys.splice(0, 0, "Total (across all categories)");
+
         vis.dropdownOptions = d3.select("#"+vis.dropdownId).selectAll("option")
-            .data(vis.keys.sort())
+            .data(vis.keys)
             .enter()
             .append("option")
             .text(d => d)
@@ -156,26 +176,39 @@ class LineVis {
     filterData(){
         let vis = this;
 
-        let selected_opts = []
+        let selected_opt = d3.select('#'+vis.dropdownId).property("value");
 
-        for (var option of d3.select('#'+vis.dropdownId).property("selectedOptions")){
-            selected_opts.push(option.value)
+        if (selected_opt == "Total (across all categories)") {
+            let all_dates = vis.data.reduce(
+                function (acc, cur) {
+                    return Array.from(acc).concat(cur.dates, [])
+                });
+
+            all_dates.sort((a,b) => a.timestamp - b.timestamp);
+
+            if (vis.rollupFunction == "avg-rating"){
+                vis.displayData = [{category: "Total", dates: vis.avg_all_ratings_monthly}];
+            }
+            else if (vis.rollupFunction == "sum-reviews"){
+                let all_unique_dates = d3.rollups(all_dates, v => d3.sum(v, d => d.value), d => d.timestamp);
+
+                all_unique_dates = Array.from(all_unique_dates, ([key, value]) => ({
+                    timestamp: key,
+                    value: value
+                }));
+
+                vis.displayData = [{category: "Total", dates: all_unique_dates}];
+            }
+            else {
+                console.log("ERROR: Invalid rollupFunction value");
+            }
         }
-
-        if (selected_opts.length > 0) {
-            vis.displayData = [];
-
-            vis.data.forEach(function (elem) {
-                if (selected_opts.includes(elem.category)) {
-                    vis.displayData.push(elem);
-                }
-            })
-        }
-        else {
+        /*else if (selected_opt == "all"){
             vis.displayData = vis.data;
+        }*/
+        else {
+            vis.displayData = vis.data.filter(elem => elem.category == selected_opt);
         }
-
-        console.log(vis.displayData)
 
         vis.updateVis();
     }
