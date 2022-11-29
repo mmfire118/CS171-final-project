@@ -180,6 +180,7 @@
         window.data_file_path = "{{ url_for('static', filename='data/out.csv') }}"
         window.word_data_file_path = "{{ url_for('static', filename='data/wordCount.json') }}"
         window.helpful_data_path = "{{ url_for('static', filename='data/helpful.json') }}"
+        window.stop_words_file_path = "{{ url_for('static', filename='data/stopWords.json') }}"
 
         $(window).on('load', function() {
             $.blockUI({

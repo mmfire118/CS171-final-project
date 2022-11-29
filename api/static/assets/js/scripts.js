@@ -5,7 +5,8 @@ let myLineVis, myLineVis2;
 let promises = [
   d3.csv(window.data_file_path),
   d3.json(window.word_data_file_path),
-  d3.json(window.helpful_data_path)
+  d3.json(window.helpful_data_path),
+  d3.json(window.stop_words_file_path)
 ];
 
 Promise.all(promises)
@@ -52,7 +53,7 @@ function initMainPage(dataArray) {
   myTreeMap = new TreeMap('rising-insight', dataArray[0])
 
   //init Bubbles
-  myBubbleGraph = new BubbleVis('hook-div', dataArray[1])
+  myBubbleGraph = new BubbleVis('hook-div', dataArray[1], dataArray[3][0].stopwords)
 
   //init Helpful
   myHelpfulChart = new HelpfulChart('helpful-div', dataArray[2])

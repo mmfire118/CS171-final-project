@@ -1,7 +1,8 @@
 class BubbleVis {
-    constructor(parentElement, data) {
+    constructor(parentElement, data, stopWords) {
         this.parentElement = parentElement;
         this.data = data;
+        this.stopWords = stopWords;
 
         // parse date method
         this.parseDate = d3.timeParse("%Y-%m-%d");
@@ -62,10 +63,12 @@ class BubbleVis {
 
         let filteredNegativeDataArray = [];
         for(var key in filteredDataNegative) {
-            filteredNegativeDataArray.push({
-                Word: key,
-                Value: filteredDataNegative[key]
-            })
+            if (!vis.stopWords.includes(key)) {
+                filteredNegativeDataArray.push({
+                    Word: key,
+                    Value: filteredDataNegative[key]
+                })
+            }
         }
 
         //TODO: REMOVE STUPID WORDS
