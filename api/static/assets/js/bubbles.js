@@ -1,8 +1,9 @@
 class BubbleVis {
-    constructor(parentElement, data, stopWords) {
+    constructor(parentElement, data, stopWords, wordFreqTextID) {
         this.parentElement = parentElement;
         this.data = data;
         this.stopWords = stopWords;
+        this.wordFreqTextID = wordFreqTextID;
 
         // parse date method
         this.parseDate = d3.timeParse("%Y-%m-%d");
@@ -22,6 +23,8 @@ class BubbleVis {
             .attr("width", vis.width)
             .attr("height", vis.height)
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
+
+        vis.wordFreqText = d3.select("#"+vis.wordFreqTextID)
 
         vis.wrangleData();
     }
@@ -61,25 +64,23 @@ class BubbleVis {
             }
         }
 
-        let filteredNegativeDataArray = [];
+        vis.filteredNegativeDataArray = [];
         for(var key in filteredDataNegative) {
-            if (!vis.stopWords.includes(key)) {
-                filteredNegativeDataArray.push({
+            // if (!vis.stopWords.includes(key)) {
+                vis.filteredNegativeDataArray.push({
                     Word: key,
                     Value: filteredDataNegative[key]
                 })
-            }
+            // }
         }
 
         //TODO: REMOVE STUPID WORDS
 
-        filteredNegativeDataArray.sort((a, b) => b.Value - a.Value)
-
-        
+        vis.filteredNegativeDataArray.sort((a, b) => b.Value - a.Value)
 
         //take top25
         vis.displayData = {
-            "children": filteredNegativeDataArray.slice(0, 25)
+            "children": vis.filteredNegativeDataArray.filter(elem => !vis.stopWords.includes(elem.Word)).slice(0, 25)
         };
         //console.log(vis.displayData)
 
@@ -152,5 +153,22 @@ class BubbleVis {
 
         d3.select(self.frameElement)
             .style("height", diameter + "px");
+    }
+
+    updateWordFreqText(word) {
+        let vis = this;
+
+        console.log(vis.wordFreqText)
+
+        for(var elem in vis.filteredNegativeDataArray) {
+            console.log(vis.filteredNegativeDataArray[elem])
+            if (word == vis.filteredNegativeDataArray[elem].Word) {
+                let value = vis.filteredNegativeDataArray[elem].Value
+                vis.wordFreqText.html(`The word \"${word}\" appeared <b>${d3.format(",")(value)}</b> times in our sample.`)
+                return
+            }
+        }
+
+        vis.wordFreqText.html(`The word \"${word}\" did not appear at all in our sample.`)
     }
 }

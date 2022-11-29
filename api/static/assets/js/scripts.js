@@ -52,8 +52,10 @@ function initMainPage(dataArray) {
   // init treemap
   myTreeMap = new TreeMap('rising-insight', dataArray[0])
 
+  console.log(dataArray[1])
+
   //init Bubbles
-  myBubbleGraph = new BubbleVis('hook-div', dataArray[1], dataArray[3][0].stopwords)
+  myBubbleGraph = new BubbleVis('hook-div', dataArray[1], dataArray[3][0].stopwords, "word-freq-result")
 
   //init Helpful
   myHelpfulChart = new HelpfulChart('helpful-div', dataArray[2])
@@ -65,4 +67,9 @@ function mainMessageCatChange() {
 
 function solutionCatChange() {
     myLineVis2.filterData();
+}
+
+function displayWordFreq() {
+    let selectedWord = document.getElementById('word-freq').value;
+    myBubbleGraph.updateWordFreqText(selectedWord);
 }
