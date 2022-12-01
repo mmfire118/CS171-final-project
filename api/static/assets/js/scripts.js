@@ -65,6 +65,10 @@ function filterWords() {
     myBubbleGraph.wrangleData();
 }
 
+function filterHelpful() {
+    myHelpfulChart.wrangleData();
+}
+
 function mainMessageCatChange() {
     myLineVis.filterData();
 }

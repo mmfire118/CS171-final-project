@@ -11,7 +11,7 @@ class HelpfulChart {
     initVis() {
         let vis = this;
 
-        vis.margin = {top: 0, right: 0, bottom: 0, left: 0};
+        vis.margin = {top: 30, right: 0, bottom: 0, left: 0};
         vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
@@ -29,18 +29,29 @@ class HelpfulChart {
 
     wrangleData() {
         let vis = this;
+        vis.selected_cat = d3.select('#helpful-select').property("value");
 
         console.log(vis.data)
-
-        let aggregateData = {};
-        for(var key in vis.data) {
-            for(let i = 0; i < 5; i++) {
-                if(aggregateData[i + 1]) {
-                    aggregateData[i + 1] = aggregateData[i + 1] + vis.data[key][i + 1]
-                } else {
-                    aggregateData[i + 1] = vis.data[key][i + 1]
+        var aggregateData = {};
+        if(vis.selected_cat === "all") {
+            for(var key in vis.data) {
+                for(let i = 0; i < 5; i++) {
+                    if(aggregateData[i + 1]) {
+                        aggregateData[i + 1] = aggregateData[i + 1] + vis.data[key][i + 1]
+                    } else {
+                        aggregateData[i + 1] = vis.data[key][i + 1]
+                    }
                 }
             }
+        } else {
+            for(let i = 0; i < 5; i++) {
+                if(aggregateData[i + 1]) {
+                    aggregateData[i + 1] = aggregateData[i + 1] + vis.data[vis.selected_cat][i + 1]
+                } else {
+                    aggregateData[i + 1] = vis.data[vis.selected_cat][i + 1]
+                }
+            }
+            
         }
 
         let aggregateArray = [];
@@ -57,47 +68,72 @@ class HelpfulChart {
     }
 
     updateVis() {
+        console.log(this.displayData)
         let vis = this;
 
         var diameter = 600;
 
         var radiusScale = d3.scaleSqrt()
-        .domain(d3.extent(vis.displayData, d => d.count))
-        .range([0.2, 1])
+            .domain(d3.extent(vis.displayData, d => d.count))
+            .range([0.2, 1])
 
         var previousElementY = 25;
         var previousElementHeight = 0;
         let starTerms = ["One Star", "Two Star", "Three Star", "Four Star", "Five Star"]
-        vis.displayData.forEach((element, index) => {
-            console.log("YES")
-            console.log(radiusScale(element.count))
-            var node = vis.svg
-                .append("g")
-                .attr("class", "node")
 
-            let x = vis.width / 2 - (500 * radiusScale(element.count) / 2)
-            let width =  500 * radiusScale(element.count);
-            let y = previousElementY + previousElementHeight + 100
-            node.append("image")
-                .attr("href","/static/assets/js/images/" + (index + 1) + "star.svg")
-                .attr("x", x)
-                .attr("y", y)
-                .attr("width", width)
-                .attr("height", (500 * (244 / 1284)) * radiusScale(element.count))
+        var images = vis.svg.selectAll("image")
+            .data(vis.displayData, d=>d.rating)
 
-            node.append("text")
-                .text("Number of Helpful " + starTerms[index] + " Reviews: " + element.count)
-                .attr("x", x + (width / 2))
-                .attr("y", y - 15)
-                .attr("fill", "white")
-                .attr("text-anchor", "middle")
+        images.exit().remove(); 
+
+        images.enter()
+            .append("image")
+            .merge(images)
+            .attr("href", d=> "/static/assets/js/images/" + d.rating + "star.svg")
+            .transition()
+            .duration(800)
+            .attr("x", d=> vis.width / 2 - (500 * radiusScale(d.count) / 2))
+            .attr("y", function(d, i) {
+                var y = 50;
+                if(i !== 0) {
+                    let previousHeight = (500 * (244 / 1284)) * radiusScale(vis.displayData[i-1].count)
+                    
+                    for(let j = 0; j < i; j++) {
+                        y += (500 * (244 / 1284)) * radiusScale(vis.displayData[j].count) + 75
+                    }
+                }
+                return y;
+            })
+            .attr("width", d=> 500 * radiusScale(d.count))
+            .attr("height", d=> (500 * (244 / 1284)) * radiusScale(d.count))
+
+        var text = vis.svg.selectAll("text")
+            .data(vis.displayData, d=>d.rating)
+
+        text.exit().remove(); 
+
+        text.enter()
+            .append("text")
+            .merge(text)
             
-            previousElementY = y;
-            previousElementHeight = (500 * (244 / 1284)) * radiusScale(element.count);
-               
-        })
-
-        d3.select(self.frameElement)
-            .style("height", diameter + "px");
+            .attr("text-anchor", "middle")
+            .attr("fill", "white")
+            .transition()
+            .duration(800)
+            .text(function(d, i) {
+                return "Number of Helpful " + starTerms[i] + " Reviews: " + d.count
+            })
+            .attr("x", d=> (vis.width / 2) - (500 * radiusScale(d.count) / 2) + (500 * radiusScale(d.count) / 2))
+            .attr("y", function(d, i) {
+                var y = 30;
+                if(i !== 0) {
+                    let previousHeight = (500 * (244 / 1284)) * radiusScale(vis.displayData[i-1].count)
+                    
+                    for(let j = 0; j < i; j++) {
+                        y += (500 * (244 / 1284)) * radiusScale(vis.displayData[j].count) + 75
+                    }
+                }
+                return y;
+            })
     }
 }
