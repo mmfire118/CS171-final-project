@@ -157,3 +157,18 @@ body.swal2-shown.swal2-height-auto {
 #helpful-div{
 	height: 1000px;
 }
+
+#words-tooltip {
+	position: absolute;
+	background: #ecf0f1;
+	border: 2px solid #bdc3c7;
+	border-radius: 16px;
+	padding: 15px;
+	box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.19);
+	color: #34495e;
+	z-index: 10;
+  }
+  
+  .hidden {
+	display: none;
+  }

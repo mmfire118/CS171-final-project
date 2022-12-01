@@ -102,8 +102,13 @@
                             <div class="col-12 text-center mt-2">
                                 <h3 class="mt-50">What are the most common words used in negative or positive reviews?</h3>
                                 <p class="mb-1">This is a compilation of the most common words across our set of Amazon reviews.</p>
+                                <select id="words-select" class="form-select text-center mb-1" name="filter-words" onchange="filterWords()">
+                                    <option value="negative">Negative</option>
+                                    <option value="positive">Positive</option>
+                                    <option value="all">All</option>
+                                </select>
                                 <div id="hook-div">
-                                
+                                    <div id="words-tooltip" class="hidden"><h5>Value</h5><span id="value"></span></div>
                                 </div>
                                 <label for="word-freq">Look up the frequency of words here:</label>
                                 <input type="text" id="word-freq" name="word-freq" placeholder="Type a word here">

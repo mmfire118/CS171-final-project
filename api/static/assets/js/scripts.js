@@ -61,6 +61,10 @@ function initMainPage(dataArray) {
   myHelpfulChart = new HelpfulChart('helpful-div', dataArray[2])
 }
 
+function filterWords() {
+    myBubbleGraph.wrangleData();
+}
+
 function mainMessageCatChange() {
     myLineVis.filterData();
 }

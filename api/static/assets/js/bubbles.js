@@ -18,6 +18,7 @@ class BubbleVis {
         vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
+
         // init drawing area
         vis.svg = d3.select("#" + vis.parentElement).append("svg")
             .attr("width", vis.width)
@@ -33,24 +34,28 @@ class BubbleVis {
         let vis = this;
 
         // console.log(vis.data["Automotive"]["1"]);
-        
+        vis.selected_opt = d3.select('#words-select').property("value");
+        let stars = ["1", "2"]
+        if (vis.selected_opt == "positive") {
+            stars = ["4", "5"]
+        }
 
         let filteredDataNegative = {};
 
         for(var category in vis.data) {
             let categoryDataNegative = {};
-            for(var key in vis.data[category]["1"]) {
-                if(vis.data[category]["2"][key]) {
-                   let updatedValue = vis.data[category]["1"][key] + vis.data[category]["2"][key];
+            for(var key in vis.data[category][stars[0]]) {
+                if(vis.data[category][stars[1]][key]) {
+                   let updatedValue = vis.data[category][stars[0]][key] + vis.data[category][stars[1]][key];
                    categoryDataNegative[key] = updatedValue;
                 } else {
-                    categoryDataNegative[key] = vis.data[category]["1"][key]
+                    categoryDataNegative[key] = vis.data[category][stars[0]][key]
                 }
             }
     
-            for(var key in vis.data[category]["2"]) {
-                if(!vis.data[category]["1"][key]) {
-                    categoryDataNegative[key] = vis.data[category]["2"][key]
+            for(var key in vis.data[category][stars[1]]) {
+                if(!vis.data[category][stars[0]][key]) {
+                    categoryDataNegative[key] = vis.data[category][stars[1]][key]
                 }
             }
 
@@ -80,79 +85,129 @@ class BubbleVis {
 
         //take top25
         vis.displayData = {
-            "children": vis.filteredNegativeDataArray.filter(elem => !vis.stopWords.includes(elem.Word)).slice(0, 25)
+            "children": vis.filteredNegativeDataArray.filter(elem => !vis.stopWords.includes(elem.Word)).slice(0, 50)
         };
         //console.log(vis.displayData)
+
+        var diameter = 600;
+        var color = d3.scaleOrdinal(d3.schemeCategory10);
+        var myColor = d3.scaleLinear().domain([1,8000])
+            .range(["white", "green"])
+
+        var bubble = d3.pack(vis.displayData)
+            .size([diameter, diameter])
+            .padding(1.5);
+
+        vis.nodes = d3.hierarchy(vis.displayData)
+            .sum(function(d) { return d.Value; });
+
+        vis.simpleNodes = []
+        bubble(vis.nodes).descendants().forEach((element, index) => {
+            if(index !== 0) {
+                vis.simpleNodes.push({
+                    word: element.data.Word,
+                    value: element.data.Value,
+                    radius: element.r
+                })
+            }
+        })
 
         vis.updateVis();
     }
 
     updateVis() {
         let vis = this;
+        var color = "green"
+        if (vis.selected_opt == "negative") {
+            color = "red";
+        }
 
-        var diameter = 600;
-        var color = d3.scaleOrdinal(d3.schemeCategory10);
+        var myColor = d3.scaleLinear().domain([d3.min(vis.simpleNodes, d => d.radius),d3.max(vis.simpleNodes, d => d.radius)])
+            .range(["white", color])
 
-        var bubble = d3.pack(vis.displayData)
-            .size([diameter, diameter])
-            .padding(1.5);
 
-        var nodes = d3.hierarchy(vis.displayData)
-            .sum(function(d) { return d.Value; });
+        var simulation = d3.forceSimulation(vis.simpleNodes)
+            .force('charge', d3.forceManyBody().strength(5))
+            .force('center', d3.forceCenter(vis.width / 2, vis.height / 2))
+            .force('collision', d3.forceCollide().radius(function(d) {
+                return d.radius
+            }))
+            .on('tick', function() {
+                vis.svg
+                    .selectAll('circle')
+                    .data(vis.simpleNodes)
+                    .join('circle')
+                    .attr('r', function(d) {
+                        return d.radius
+                    })
+                    .attr('cx', function(d) {
+                        return d.x
+                    })
+                    .attr('cy', function(d) {
+                        return d.y
+                    })
+                    .style("fill", function(d,i) {
+                        return myColor(d.radius);
+                    })
+                    .on("mouseover", function(event, d) {
+                        d3.select("#words-tooltip")
+                            .style('left', `${event.pageX - vis.margin.left}px`)
+                            .style('top', `${event.pageY - vis.margin.top}px`)
+                            .select("#value")
+                            .text(d.value);
+                            
+                        d3.select(this).attr("stroke", "black").attr("stroke-width", "5px")
 
-        console.log(bubble(nodes).descendants())
+                        d3.select("#words-tooltip").classed("hidden", false);
+                    })
+                    .on("mousemove", function(event) {
+                        let coords = d3.pointer(event);
+                        d3.select("#words-tooltip")
+                            .style('left', `${event.pageX - vis.margin.left}px`)
+                            .style('top', `${event.pageY - vis.margin.top}px`)
+                    })
+                    .on("mouseout", function() {
+                        d3.select("#words-tooltip").classed("hidden", true);
+                        d3.select(this).attr("stroke", "none").attr("stroke-width", "0px")
+                    });
 
-        var node = vis.svg.selectAll(".node")
-            .data(bubble(nodes).descendants())
-            .enter()
-            .filter(function(d){
-                return  !d.children
-            })
-            .append("g")
-            .attr("class", "node")
-            .attr("transform", function(d) {
-                return "translate(" + d.x + "," + d.y + ")";
+                vis.svg
+                    .selectAll('text')
+                    .data(vis.simpleNodes)
+                        .join('text')
+                    .text(function(d) {
+                        return d.word
+                    })
+                    .attr("x", function(d) {
+                        return d.x
+                    })
+                    .attr("y", function(d) {
+                        return d.y + (d.radius/5)
+                    })
+                    .style("text-anchor", "middle")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", function(d){
+                        return d.radius/2;
+                    })
+                    .on("mouseover", function(event, d) {
+                        d3.select("#words-tooltip")
+                            .style('left', `${event.pageX - vis.margin.left}px`)
+                            .style('top', `${event.pageY - vis.margin.top}px`)
+                            .select("#value")
+                            .text(d.value);
+
+                        d3.select("#words-tooltip").classed("hidden", false);
+                    })
+                    .on("mousemove", function(event) {
+                        let coords = d3.pointer(event);
+                        d3.select("#words-tooltip")
+                        .style('left', `${event.pageX - vis.margin.left}px`)
+                        .style('top', `${event.pageY - vis.margin.top}px`)
+                    })
+                    .on("mouseout", function() {
+                        d3.select("#words-tooltip").classed("hidden", true);
+                    });
             });
-
-        node.append("title")
-            .text(function(d) {
-                return d.Word + ": " + d.Value;
-            });
-
-        node.append("circle")
-            .attr("r", function(d) {
-                return d.r;
-            })
-            .style("fill", function(d,i) {
-                return color(i);
-            });
-
-        node.append("text")
-            .attr("dy", ".2em")
-            .style("text-anchor", "middle")
-            .text(function(d) {
-                return d.data.Word.substring(0, d.r / 3);
-            })
-            .attr("font-family", "sans-serif")
-            .attr("font-size", function(d){
-                return d.r/5;
-            })
-            .attr("fill", "white");
-
-        node.append("text")
-            .attr("dy", "1.3em")
-            .style("text-anchor", "middle")
-            .text(function(d) {
-                return d.data.Value;
-            })
-            .attr("font-family",  "Gill Sans", "Gill Sans MT")
-            .attr("font-size", function(d){
-                return d.r/5;
-            })
-            .attr("fill", "white");
-
-        d3.select(self.frameElement)
-            .style("height", diameter + "px");
     }
 
     updateWordFreqText(word) {
