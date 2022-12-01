@@ -130,8 +130,8 @@ class BubbleVis {
 
 
         vis.simulation = d3.forceSimulation(vis.simpleNodes)
-            .force("forceX", d3.forceX().strength(.05).x(vis.width * .5))
-            .force("forceY", d3.forceY().strength(.05).y(vis.height * .5))
+            .force("forceX", d3.forceX().strength(.06).x(vis.width * .5))
+            .force("forceY", d3.forceY().strength(.06).y(vis.height * .5))
             .force("center", d3.forceCenter().x(vis.width * .5).y(vis.height * .5))
             .force("charge", d3.forceManyBody().strength(-15))
             .force('collision', d3.forceCollide().strength(.5).radius(function(d){ return d.radius + 2.5; }).iterations(1))
@@ -155,7 +155,7 @@ class BubbleVis {
                     })
                     .call(d3.drag()
                         .on("start", function(event, d) {
-                            if (!event.active) vis.simulation.alphaTarget(0.3).restart();
+                            if (!event.active) vis.simulation.alphaTarget(0.2).restart();
                             d.fy = d.y;
                             d.fx = d.x;
                         })
@@ -175,7 +175,12 @@ class BubbleVis {
                             .select("#value")
                             .text(d.value);
                             
-                        d3.select(this).attr("stroke", "black").attr("stroke-width", "5px")
+                        d3.select(this)
+                            .style('cursor', 'pointer')
+                            .transition()
+                            .duration(100)
+                            .attr("stroke", "black")
+                            .attr("stroke-width", "5px")
 
                         d3.select("#words-tooltip").classed("hidden", false);
                     })
@@ -187,7 +192,12 @@ class BubbleVis {
                     })
                     .on("mouseout", function() {
                         d3.select("#words-tooltip").classed("hidden", true);
-                        d3.select(this).attr("stroke", "none").attr("stroke-width", "0px")
+                        d3.select(this)
+                            .style('cursor', 'pointer')
+                            .transition()
+                            .duration(100)
+                            .attr("stroke", "none")
+                            .attr("stroke-width", "0px")
                     });
 
                 vis.svg
@@ -214,14 +224,20 @@ class BubbleVis {
                             .style('top', `${event.pageY - vis.margin.top}px`)
                             .select("#value")
                             .text(d.value);
+                        
+                        d3.select(this)
+                            .style('cursor', 'pointer')
 
                         d3.select("#words-tooltip").classed("hidden", false);
                     })
                     .on("mousemove", function(event) {
                         let coords = d3.pointer(event);
                         d3.select("#words-tooltip")
-                        .style('left', `${event.pageX - vis.margin.left}px`)
-                        .style('top', `${event.pageY - vis.margin.top}px`)
+                            .style('left', `${event.pageX - vis.margin.left}px`)
+                            .style('top', `${event.pageY - vis.margin.top}px`)
+
+                        d3.select(this)
+                            .style('cursor', 'pointer')
                     })
                     .on("mouseout", function() {
                         d3.select("#words-tooltip").classed("hidden", true);
@@ -238,19 +254,9 @@ class BubbleVis {
             console.log(vis.filteredNegativeDataArray[elem])
             if (word == vis.filteredNegativeDataArray[elem].Word) {
                 let value = vis.filteredNegativeDataArray[elem].Value
-                // vis.displayData["children"].push({
-                //     Word: word,
-                //     Value: value
-                // })
-                // vis.organizeData();
-                // vis.simpleNodes.push({
-                //     word: word,
-                //     value: value,
-                //     radius: 50
-                // })
+
                 vis.addBubble(word, value);
-                // vis.simulation.nodes(vis.simpleNodes);
-                // vis.simulation.alpha(1).restart();
+
                 vis.wordFreqText.html(`The word \"${word}\" appeared <b>${d3.format(",")(value)}</b> times in our sample.`)
                 return
             }
