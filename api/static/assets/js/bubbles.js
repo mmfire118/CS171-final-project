@@ -89,10 +89,13 @@ class BubbleVis {
         };
         //console.log(vis.displayData)
 
+        vis.organizeData();
+    }
+
+    organizeData() {
+        let vis = this;
+
         var diameter = 600;
-        var color = d3.scaleOrdinal(d3.schemeCategory10);
-        var myColor = d3.scaleLinear().domain([1,8000])
-            .range(["white", "green"])
 
         var bubble = d3.pack(vis.displayData)
             .size([diameter, diameter])
@@ -122,16 +125,17 @@ class BubbleVis {
             color = "red";
         }
 
-        var myColor = d3.scaleLinear().domain([d3.min(vis.simpleNodes, d => d.radius),d3.max(vis.simpleNodes, d => d.radius)])
+        vis.myColor = d3.scaleLinear().domain([d3.min(vis.simpleNodes, d => d.radius), d3.max(vis.simpleNodes, d => d.radius)])
             .range(["white", color])
 
 
-        var simulation = d3.forceSimulation(vis.simpleNodes)
-            .force('charge', d3.forceManyBody().strength(5))
-            .force('center', d3.forceCenter(vis.width / 2, vis.height / 2))
-            .force('collision', d3.forceCollide().radius(function(d) {
-                return d.radius
-            }))
+        vis.simulation = d3.forceSimulation(vis.simpleNodes)
+            .force("forceX", d3.forceX().strength(.05).x(vis.width * .5))
+            .force("forceY", d3.forceY().strength(.05).y(vis.height * .5))
+            .force("center", d3.forceCenter().x(vis.width * .5).y(vis.height * .5))
+            .force("charge", d3.forceManyBody().strength(-15))
+            .force('collision', d3.forceCollide().strength(.5).radius(function(d){ return d.radius + 2.5; }).iterations(1))
+            .nodes(vis.simpleNodes)
             .on('tick', function() {
                 vis.svg
                     .selectAll('circle')
@@ -147,8 +151,23 @@ class BubbleVis {
                         return d.y
                     })
                     .style("fill", function(d,i) {
-                        return myColor(d.radius);
+                        return vis.myColor(d.radius);
                     })
+                    .call(d3.drag()
+                        .on("start", function(event, d) {
+                            if (!event.active) vis.simulation.alphaTarget(0.3).restart();
+                            d.fy = d.y;
+                            d.fx = d.x;
+                        })
+                        .on("drag", function(event, d) {
+                            d.fx = event.x;
+                            d.fy = event.y;
+                        })
+                        .on("end", function(event, d) {
+                            if (!event.active) vis.simulation.alphaTarget(0);
+                            d.fx = null;
+                            d.fy = null;
+                        }))
                     .on("mouseover", function(event, d) {
                         d3.select("#words-tooltip")
                             .style('left', `${event.pageX - vis.margin.left}px`)
@@ -219,11 +238,62 @@ class BubbleVis {
             console.log(vis.filteredNegativeDataArray[elem])
             if (word == vis.filteredNegativeDataArray[elem].Word) {
                 let value = vis.filteredNegativeDataArray[elem].Value
+                // vis.displayData["children"].push({
+                //     Word: word,
+                //     Value: value
+                // })
+                // vis.organizeData();
+                // vis.simpleNodes.push({
+                //     word: word,
+                //     value: value,
+                //     radius: 50
+                // })
+                vis.addBubble(word, value);
+                // vis.simulation.nodes(vis.simpleNodes);
+                // vis.simulation.alpha(1).restart();
                 vis.wordFreqText.html(`The word \"${word}\" appeared <b>${d3.format(",")(value)}</b> times in our sample.`)
                 return
             }
         }
 
         vis.wordFreqText.html(`The word \"${word}\" did not appear at all in our sample.`)
+    }
+
+    addBubble(word, value) {
+        let vis = this;
+
+        vis.displayData["children"].push({
+            Word: word,
+            Value: value
+        })
+        
+        var diameter = 600;
+
+        var bubble = d3.pack(vis.displayData)
+            .size([diameter, diameter])
+            .padding(1.5);
+
+        vis.nodes = d3.hierarchy(vis.displayData)
+            .sum(function(d) { return d.Value; });
+
+        bubble(vis.nodes).descendants().forEach((element, index, array) => {
+            if(index !== 0) {
+                if(word !== element.data.Word) {
+                    vis.simpleNodes[index - 1].radius = element.r;
+                } else {
+                    vis.simpleNodes.push({
+                        word: element.data.Word,
+                        value: element.data.Value,
+                        radius: element.r
+                    })
+                }
+            }
+        })
+
+        vis.myColor
+            .domain([d3.min(vis.simpleNodes, d => d.radius), d3.max(vis.simpleNodes, d => d.radius)])
+
+        vis.simulation.nodes(vis.simpleNodes);
+        vis.simulation.alpha(1).restart();
     }
 }
