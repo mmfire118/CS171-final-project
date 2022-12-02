@@ -18,7 +18,6 @@ class BubbleVis {
         vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
-
         // init drawing area
         vis.svg = d3.select("#" + vis.parentElement).append("svg")
             .attr("width", vis.width)
@@ -125,8 +124,13 @@ class BubbleVis {
             color = "red";
         }
 
-        vis.myColor = d3.scaleLinear().domain([d3.min(vis.simpleNodes, d => d.radius), d3.max(vis.simpleNodes, d => d.radius)])
+        vis.max = d3.max(vis.simpleNodes, d => d.radius);
+        vis.min = d3.min(vis.simpleNodes, d => d.radius);
+        vis.myColor = d3.scaleLinear().domain([vis.min, vis.max])
             .range(["white", color])
+        
+        vis.myColorInverted = d3.scaleLinear().domain([d3.min(vis.simpleNodes, d => d.radius), d3.max(vis.simpleNodes, d => d.radius)])
+            .range([color, "white"])
 
 
         vis.simulation = d3.forceSimulation(vis.simpleNodes)
@@ -178,8 +182,14 @@ class BubbleVis {
                         d3.select(this)
                             .style('cursor', 'pointer')
                             .transition()
-                            .duration(100)
-                            .attr("stroke", "black")
+                            .duration(500)
+                            .attr("stroke", d=> {
+                                if(((vis.max - vis.min) / 2) + vis.min <= d.radius) {
+                                    return "white";
+                                } else {
+                                    return color;
+                                }
+                            })
                             .attr("stroke-width", "5px")
 
                         d3.select("#words-tooltip").classed("hidden", false);
@@ -195,8 +205,7 @@ class BubbleVis {
                         d3.select(this)
                             .style('cursor', 'pointer')
                             .transition()
-                            .duration(100)
-                            .attr("stroke", "none")
+                            .duration(500)
                             .attr("stroke-width", "0px")
                     });
 
@@ -217,6 +226,13 @@ class BubbleVis {
                     .attr("font-family", "sans-serif")
                     .attr("font-size", function(d){
                         return d.radius/2;
+                    })
+                    .attr("fill", d=> {
+                        if(((vis.max - vis.min) / 2) + vis.min <= d.radius) {
+                            return "white";
+                        } else {
+                            return color;
+                        }
                     })
                     .on("mouseover", function(event, d) {
                         d3.select("#words-tooltip")
@@ -247,22 +263,24 @@ class BubbleVis {
 
     updateWordFreqText(word) {
         let vis = this;
-
-        console.log(vis.wordFreqText)
-
+        let lowerCaseWord = word.toLowerCase();
+        
         for(var elem in vis.filteredNegativeDataArray) {
-            console.log(vis.filteredNegativeDataArray[elem])
-            if (word == vis.filteredNegativeDataArray[elem].Word) {
+            if (lowerCaseWord == vis.filteredNegativeDataArray[elem].Word) {
                 let value = vis.filteredNegativeDataArray[elem].Value
 
-                vis.addBubble(word, value);
-
-                vis.wordFreqText.html(`The word \"${word}\" appeared <b>${d3.format(",")(value)}</b> times in our sample.`)
+                if (!vis.displayData["children"].find(e => e.Word === lowerCaseWord)) {
+                    vis.addBubble(lowerCaseWord, value);
+                    vis.wordFreqText.html(`The word \"${lowerCaseWord}\" appeared <b>${d3.format(",")(value)}</b> times in our sample.`)
+                } else {
+                    vis.wordFreqText.html(`The word \"${lowerCaseWord}\" appeared <b>${d3.format(",")(value)}</b> times in our sample. (It was already added to the graph)`)
+                }
+                
                 return
             }
         }
 
-        vis.wordFreqText.html(`The word \"${word}\" did not appear at all in our sample.`)
+        vis.wordFreqText.html(`The word \"${lowerCaseWord}\" did not appear at all in our sample.`)
     }
 
     addBubble(word, value) {
