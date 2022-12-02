@@ -232,7 +232,13 @@ class BubbleVis {
                     .selectAll('text')
                     .data(vis.simpleNodes)
                     .join('text')
-                    .text(d=> d.word)
+                    .text(d=> {
+                        if(d.word.length > 7) {
+                            return d.word.slice(0, 5) + "..."
+                        } else {
+                            return d.word;
+                        }
+                    })
                     .attr("x", d=> d.x)
                     .attr("y", d=> d.y + (d.radius/5))
                     .style("text-anchor", "middle")
