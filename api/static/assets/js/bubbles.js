@@ -34,49 +34,83 @@ class BubbleVis {
 
         // console.log(vis.data["Automotive"]["1"]);
         vis.selected_opt = d3.select('#words-select').property("value");
-        let stars = ["1", "2"]
-        if (vis.selected_opt == "positive") {
-            stars = ["4", "5"]
-        }
 
-        let filteredDataNegative = {};
-
-        for(var category in vis.data) {
-            let categoryDataNegative = {};
-            for(var key in vis.data[category][stars[0]]) {
-                if(vis.data[category][stars[1]][key]) {
-                   let updatedValue = vis.data[category][stars[0]][key] + vis.data[category][stars[1]][key];
-                   categoryDataNegative[key] = updatedValue;
-                } else {
-                    categoryDataNegative[key] = vis.data[category][stars[0]][key]
+        if(vis.selected_opt === "all") {
+            console.log(vis.data)
+            let categoryDataNegative = [];
+            for(var category in vis.data) {
+                for(let i = 0; i < 5; i++) {
+                    for(var key in vis.data[category][i+1]) {
+                        categoryDataNegative.push({
+                            word: key,
+                            value: vis.data[category][i+1][key]
+                        })
+                    }
                 }
             }
     
-            for(var key in vis.data[category][stars[1]]) {
-                if(!vis.data[category][stars[0]][key]) {
-                    categoryDataNegative[key] = vis.data[category][stars[1]][key]
+            console.log(categoryDataNegative)
+    
+            let rollup = d3.rollup(categoryDataNegative, v => d3.sum(v, d => d.value), d=> d.word)
+
+            vis.filteredNegativeDataArray = [];
+            for (const [key, value] of rollup) {
+                vis.filteredNegativeDataArray.push({
+                    Word: key, 
+                    Value: value
+                });
+            }
+
+            console.log("THIS IS IT")
+            console.log(vis.filteredNegativeDataArray)
+    
+        } else {
+            let stars = ["1", "2"]
+            if (vis.selected_opt == "positive") {
+                stars = ["4", "5"]
+            }
+    
+            let filteredDataNegative = {};
+    
+            for(var category in vis.data) {
+                let categoryDataNegative = {};
+                for(var key in vis.data[category][stars[0]]) {
+                    if(vis.data[category][stars[1]][key]) {
+                       let updatedValue = vis.data[category][stars[0]][key] + vis.data[category][stars[1]][key];
+                       categoryDataNegative[key] = updatedValue;
+                    } else {
+                        categoryDataNegative[key] = vis.data[category][stars[0]][key]
+                    }
+                }
+        
+                for(var key in vis.data[category][stars[1]]) {
+                    if(!vis.data[category][stars[0]][key]) {
+                        categoryDataNegative[key] = vis.data[category][stars[1]][key]
+                    }
+                }
+    
+                for(var key in categoryDataNegative) {
+                    if(filteredDataNegative[key]) {
+                        let updatedValue = filteredDataNegative[key] + categoryDataNegative[key];
+                        filteredDataNegative[key] = updatedValue;
+                     } else {
+                        filteredDataNegative[key] = categoryDataNegative[key]
+                     }
                 }
             }
 
-            for(var key in categoryDataNegative) {
-                if(filteredDataNegative[key]) {
-                    let updatedValue = filteredDataNegative[key] + categoryDataNegative[key];
-                    filteredDataNegative[key] = updatedValue;
-                 } else {
-                    filteredDataNegative[key] = categoryDataNegative[key]
-                 }
+            vis.filteredNegativeDataArray = [];
+            for(var key in filteredDataNegative) {
+                // if (!vis.stopWords.includes(key)) {
+                    vis.filteredNegativeDataArray.push({
+                        Word: key,
+                        Value: filteredDataNegative[key]
+                    })
+                // }
             }
+    
         }
-
-        vis.filteredNegativeDataArray = [];
-        for(var key in filteredDataNegative) {
-            // if (!vis.stopWords.includes(key)) {
-                vis.filteredNegativeDataArray.push({
-                    Word: key,
-                    Value: filteredDataNegative[key]
-                })
-            // }
-        }
+       
 
         //TODO: REMOVE STUPID WORDS
 
@@ -119,9 +153,11 @@ class BubbleVis {
 
     updateVis() {
         let vis = this;
-        var color = "green"
+        var color = "#2ecc71"
         if (vis.selected_opt == "negative") {
-            color = "red";
+            color = "#e74c3c";
+        } else if (vis.selected_opt == "all") {
+            color = "#9b59b6"
         }
 
         vis.max = d3.max(vis.simpleNodes, d => d.radius);
@@ -182,7 +218,7 @@ class BubbleVis {
                         d3.select(this)
                             .style('cursor', 'pointer')
                             .transition()
-                            .duration(500)
+                            .duration(400)
                             .attr("stroke", d=> {
                                 if(((vis.max - vis.min) / 2) + vis.min <= d.radius) {
                                     return "white";
@@ -205,7 +241,7 @@ class BubbleVis {
                         d3.select(this)
                             .style('cursor', 'pointer')
                             .transition()
-                            .duration(500)
+                            .duration(400)
                             .attr("stroke-width", "0px")
                     });
 
@@ -223,10 +259,11 @@ class BubbleVis {
                         return d.y + (d.radius/5)
                     })
                     .style("text-anchor", "middle")
-                    .attr("font-family", "sans-serif")
+                    .attr("font-family", "'Montserrat',Helvetica,Arial,serif")
                     .attr("font-size", function(d){
-                        return d.radius/2;
+                        return d.radius/2.25;
                     })
+                    .attr("font-weight", "500")
                     .attr("fill", d=> {
                         if(((vis.max - vis.min) / 2) + vis.min <= d.radius) {
                             return "white";
