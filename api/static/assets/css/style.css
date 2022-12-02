@@ -172,3 +172,19 @@ body.swal2-shown.swal2-height-auto {
   .hidden {
 	display: none;
   }
+
+  input {
+	padding: 10px;
+	border-radius: 10px;
+	margin-right: 10px;
+	margin-left: 10px;
+  }
+  
+  input:focus, input:focus-visible {
+	border-color: #7367F0;
+	border-width: 3px;
+  }
+
+  #word-freq-result {
+	margin-bottom: 10px;
+  }

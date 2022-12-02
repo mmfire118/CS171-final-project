@@ -60,9 +60,6 @@ class BubbleVis {
                     Value: value
                 });
             }
-
-            console.log("THIS IS IT")
-            console.log(vis.filteredNegativeDataArray)
     
         } else {
             let stars = ["1", "2"]
@@ -213,7 +210,7 @@ class BubbleVis {
                             .style('left', `${event.pageX - vis.margin.left}px`)
                             .style('top', `${event.pageY - vis.margin.top}px`)
                             .select("#value")
-                            .text(d.value);
+                            .text(d3.format(",")(d.value));
                             
                         d3.select(this)
                             .style('cursor', 'pointer')
@@ -276,7 +273,7 @@ class BubbleVis {
                             .style('left', `${event.pageX - vis.margin.left}px`)
                             .style('top', `${event.pageY - vis.margin.top}px`)
                             .select("#value")
-                            .text(d.value);
+                            .text(d3.format(",")(d.value));
                         
                         d3.select(this)
                             .style('cursor', 'pointer')
@@ -284,7 +281,6 @@ class BubbleVis {
                         d3.select("#words-tooltip").classed("hidden", false);
                     })
                     .on("mousemove", function(event) {
-                        let coords = d3.pointer(event);
                         d3.select("#words-tooltip")
                             .style('left', `${event.pageX - vis.margin.left}px`)
                             .style('top', `${event.pageY - vis.margin.top}px`)
@@ -356,5 +352,13 @@ class BubbleVis {
 
         vis.simulation.nodes(vis.simpleNodes);
         vis.simulation.alpha(1).restart();
+    }
+
+    clearBubbles() {
+        let vis = this;
+
+        vis.wordFreqText.html(``)
+
+        vis.wrangleData();
     }
 }

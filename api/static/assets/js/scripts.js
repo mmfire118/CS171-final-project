@@ -65,6 +65,10 @@ function filterWords() {
     myBubbleGraph.wrangleData();
 }
 
+function clearExtraBubbles() {
+    myBubbleGraph.clearBubbles();
+}
+
 function filterHelpful() {
     myHelpfulChart.wrangleData();
 }

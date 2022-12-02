@@ -118,10 +118,11 @@ class HelpfulChart {
             
             .attr("text-anchor", "middle")
             .attr("fill", "white")
+            .attr("font-size", "16px")
             .transition()
             .duration(800)
             .text(function(d, i) {
-                return "Number of Helpful " + starTerms[i] + " Reviews: " + d.count
+                return "Number of Helpful " + starTerms[i] + " Reviews: " + d3.format(",")(d.count);
             })
             .attr("x", d=> (vis.width / 2) - (500 * radiusScale(d.count) / 2) + (500 * radiusScale(d.count) / 2))
             .attr("y", function(d, i) {
