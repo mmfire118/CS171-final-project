@@ -5,16 +5,13 @@ class BubbleVis {
         this.stopWords = stopWords;
         this.wordFreqTextID = wordFreqTextID;
 
-        // parse date method
-        this.parseDate = d3.timeParse("%Y-%m-%d");
-
         this.initVis();
     }
 
     initVis() {
         let vis = this;
 
-        vis.margin = {top: 20, right: 20, bottom: 20, left: 20};
+        vis.margin = {top: 0, right: 0, bottom: 0, left: 0};
         vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
@@ -28,15 +25,13 @@ class BubbleVis {
 
         vis.wrangleData();
     }
-    //Top 25 per category
+
     wrangleData() {
         let vis = this;
 
-        // console.log(vis.data["Automotive"]["1"]);
         vis.selected_opt = d3.select('#words-select').property("value");
 
         if(vis.selected_opt === "all") {
-            console.log(vis.data)
             let categoryDataNegative = [];
             for(var category in vis.data) {
                 for(let i = 0; i < 5; i++) {
@@ -49,8 +44,6 @@ class BubbleVis {
                 }
             }
     
-            console.log(categoryDataNegative)
-    
             let rollup = d3.rollup(categoryDataNegative, v => d3.sum(v, d => d.value), d=> d.word)
 
             vis.filteredNegativeDataArray = [];
@@ -60,7 +53,6 @@ class BubbleVis {
                     Value: value
                 });
             }
-    
         } else {
             let stars = ["1", "2"]
             if (vis.selected_opt == "positive") {
@@ -98,26 +90,18 @@ class BubbleVis {
 
             vis.filteredNegativeDataArray = [];
             for(var key in filteredDataNegative) {
-                // if (!vis.stopWords.includes(key)) {
-                    vis.filteredNegativeDataArray.push({
-                        Word: key,
-                        Value: filteredDataNegative[key]
-                    })
-                // }
+                vis.filteredNegativeDataArray.push({
+                    Word: key,
+                    Value: filteredDataNegative[key]
+                })
             }
-    
         }
-       
-
-        //TODO: REMOVE STUPID WORDS
 
         vis.filteredNegativeDataArray.sort((a, b) => b.Value - a.Value)
 
-        //take top25
         vis.displayData = {
             "children": vis.filteredNegativeDataArray.filter(elem => !vis.stopWords.includes(elem.Word)).slice(0, 50)
         };
-        //console.log(vis.displayData)
 
         vis.organizeData();
     }
@@ -150,6 +134,7 @@ class BubbleVis {
 
     updateVis() {
         let vis = this;
+
         var color = "#2ecc71"
         if (vis.selected_opt == "negative") {
             color = "#e74c3c";
@@ -165,7 +150,6 @@ class BubbleVis {
         vis.myColorInverted = d3.scaleLinear().domain([d3.min(vis.simpleNodes, d => d.radius), d3.max(vis.simpleNodes, d => d.radius)])
             .range([color, "white"])
 
-
         vis.simulation = d3.forceSimulation(vis.simpleNodes)
             .force("forceX", d3.forceX().strength(.06).x(vis.width * .5))
             .force("forceY", d3.forceY().strength(.06).y(vis.height * .5))
@@ -178,17 +162,89 @@ class BubbleVis {
                     .selectAll('circle')
                     .data(vis.simpleNodes)
                     .join('circle')
-                    .attr('r', function(d) {
-                        return d.radius
+                    .attr("class", d=> d.word.replace("'", ''))
+                    .attr('r', d=> d.radius)
+                    .attr('cx', d=> d.x)
+                    .attr('cy', d=> d.y)
+                    .style("fill", d=> vis.myColor(d.radius))
+                    .call(d3.drag()
+                        .on("start", function(event, d) {
+                            if (!event.active) vis.simulation.alphaTarget(0.2).restart();
+                            d.fy = d.y;
+                            d.fx = d.x;
+                        })
+                        .on("drag", function(event, d) {
+                            d.fx = event.x;
+                            d.fy = event.y;
+                        })
+                        .on("end", function(event, d) {
+                            if (!event.active) vis.simulation.alphaTarget(0);
+                            d.fx = null;
+                            d.fy = null;
+                        }))
+                    .on("mouseover", function(event, d) {
+                        d3.select("#words-tooltip")
+                            .style('left', `${event.pageX - vis.margin.left}px`)
+                            .style('top', `${event.pageY - vis.margin.top}px`)
+                            .select("#value")
+                            .text(d3.format(",")(d.value) + " times")
+
+                        d3.select("#appeared")
+                        .text('"' + d.word + '"' + " appeared")
+                        
+                        d3.select("#sub-value")
+                            .text("in " + vis.selected_opt + " reviews")
+                            
+                        d3.select(this)
+                            .style('cursor', 'pointer')
+
+                        d3.select("." + d.word.replace("'", ''))
+                            .transition()
+                            .duration(200)
+                            .style("stroke", d=> {
+                                if(((vis.max - vis.min) / 2) + vis.min <= d.radius) {
+                                    return "white";
+                                } else {
+                                    return color;
+                                }
+                            })
+                            .style("stroke-width", "5px")
+
+                        d3.select("#words-tooltip").classed("hidden", false);
                     })
-                    .attr('cx', function(d) {
-                        return d.x
+                    .on("mousemove", function(event) {
+                        d3.select("#words-tooltip")
+                            .style('left', `${event.pageX - vis.margin.left}px`)
+                            .style('top', `${event.pageY - vis.margin.top}px`)
                     })
-                    .attr('cy', function(d) {
-                        return d.y
-                    })
-                    .style("fill", function(d,i) {
-                        return vis.myColor(d.radius);
+                    .on("mouseout", function(event, d) {
+                        d3.select("#words-tooltip").classed("hidden", true);
+                        d3.select(this)
+                            .style('cursor', 'pointer')
+                        
+                        d3.select("." + d.word.replace("'", ''))
+                            .transition()
+                            .duration(200)
+                            .style("stroke-width", "0px")
+                    });
+
+                vis.svg
+                    .selectAll('text')
+                    .data(vis.simpleNodes)
+                    .join('text')
+                    .text(d=> d.word)
+                    .attr("x", d=> d.x)
+                    .attr("y", d=> d.y + (d.radius/5))
+                    .style("text-anchor", "middle")
+                    .attr("font-family", "'Montserrat',Helvetica,Arial,serif")
+                    .attr("font-size", d=> d.radius/2.25)
+                    .attr("font-weight", "500")
+                    .attr("fill", d=> {
+                        if(((vis.max - vis.min) / 2) + vis.min <= d.radius) {
+                            return "white";
+                        } else {
+                            return color;
+                        }
                     })
                     .call(d3.drag()
                         .on("start", function(event, d) {
@@ -210,86 +266,46 @@ class BubbleVis {
                             .style('left', `${event.pageX - vis.margin.left}px`)
                             .style('top', `${event.pageY - vis.margin.top}px`)
                             .select("#value")
-                            .text(d3.format(",")(d.value));
-                            
+                            .text(d3.format(",")(d.value) + " times")
+
+                        d3.select("#appeared")
+                            .text('"' + d.word + '"' + " appeared")
+                        
+                        d3.select("#sub-value")
+                            .text("in " + vis.selected_opt + " reviews")
+                        
                         d3.select(this)
                             .style('cursor', 'pointer')
+
+                        d3.select("." + d.word.replace("'", ''))
                             .transition()
-                            .duration(400)
-                            .attr("stroke", d=> {
+                            .duration(200)
+                            .style("stroke", d=> {
                                 if(((vis.max - vis.min) / 2) + vis.min <= d.radius) {
                                     return "white";
                                 } else {
                                     return color;
                                 }
                             })
-                            .attr("stroke-width", "5px")
+                            .style("stroke-width", "5px")
 
                         d3.select("#words-tooltip").classed("hidden", false);
                     })
                     .on("mousemove", function(event) {
-                        let coords = d3.pointer(event);
                         d3.select("#words-tooltip")
                             .style('left', `${event.pageX - vis.margin.left}px`)
                             .style('top', `${event.pageY - vis.margin.top}px`)
-                    })
-                    .on("mouseout", function() {
-                        d3.select("#words-tooltip").classed("hidden", true);
+
                         d3.select(this)
                             .style('cursor', 'pointer')
+                    })
+                    .on("mouseout", function(event, d) {
+                        d3.select("#words-tooltip").classed("hidden", true);
+
+                        d3.select("." + d.word.replace("'", ''))
                             .transition()
-                            .duration(400)
-                            .attr("stroke-width", "0px")
-                    });
-
-                vis.svg
-                    .selectAll('text')
-                    .data(vis.simpleNodes)
-                        .join('text')
-                    .text(function(d) {
-                        return d.word
-                    })
-                    .attr("x", function(d) {
-                        return d.x
-                    })
-                    .attr("y", function(d) {
-                        return d.y + (d.radius/5)
-                    })
-                    .style("text-anchor", "middle")
-                    .attr("font-family", "'Montserrat',Helvetica,Arial,serif")
-                    .attr("font-size", function(d){
-                        return d.radius/2.25;
-                    })
-                    .attr("font-weight", "500")
-                    .attr("fill", d=> {
-                        if(((vis.max - vis.min) / 2) + vis.min <= d.radius) {
-                            return "white";
-                        } else {
-                            return color;
-                        }
-                    })
-                    .on("mouseover", function(event, d) {
-                        d3.select("#words-tooltip")
-                            .style('left', `${event.pageX - vis.margin.left}px`)
-                            .style('top', `${event.pageY - vis.margin.top}px`)
-                            .select("#value")
-                            .text(d3.format(",")(d.value));
-                        
-                        d3.select(this)
-                            .style('cursor', 'pointer')
-
-                        d3.select("#words-tooltip").classed("hidden", false);
-                    })
-                    .on("mousemove", function(event) {
-                        d3.select("#words-tooltip")
-                            .style('left', `${event.pageX - vis.margin.left}px`)
-                            .style('top', `${event.pageY - vis.margin.top}px`)
-
-                        d3.select(this)
-                            .style('cursor', 'pointer')
-                    })
-                    .on("mouseout", function() {
-                        d3.select("#words-tooltip").classed("hidden", true);
+                            .duration(200)
+                            .style("stroke-width", "0px")
                     });
             });
     }
@@ -333,7 +349,7 @@ class BubbleVis {
         vis.nodes = d3.hierarchy(vis.displayData)
             .sum(function(d) { return d.Value; });
 
-        bubble(vis.nodes).descendants().forEach((element, index, array) => {
+        bubble(vis.nodes).descendants().forEach((element, index) => {
             if(index !== 0) {
                 if(word !== element.data.Word) {
                     vis.simpleNodes[index - 1].radius = element.r;

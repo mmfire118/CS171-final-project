@@ -2,8 +2,6 @@ class HelpfulChart {
     constructor(parentElement, data) {
         this.parentElement = parentElement;
         this.data = data;
-        // parse date method
-        this.parseDate = d3.timeParse("%Y-%m-%d");
 
         this.initVis();
     }
@@ -21,17 +19,13 @@ class HelpfulChart {
             .attr("height", vis.height)
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
 
-
         vis.wrangleData();
-
-        
     }
 
     wrangleData() {
         let vis = this;
         vis.selected_cat = d3.select('#helpful-select').property("value");
 
-        console.log(vis.data)
         var aggregateData = {};
         if(vis.selected_cat === "all") {
             for(var key in vis.data) {
@@ -51,7 +45,6 @@ class HelpfulChart {
                     aggregateData[i + 1] = vis.data[vis.selected_cat][i + 1]
                 }
             }
-            
         }
 
         let aggregateArray = [];
@@ -68,17 +61,12 @@ class HelpfulChart {
     }
 
     updateVis() {
-        console.log(this.displayData)
         let vis = this;
-
-        var diameter = 600;
 
         var radiusScale = d3.scaleSqrt()
             .domain(d3.extent(vis.displayData, d => d.count))
             .range([0.2, 1])
 
-        var previousElementY = 25;
-        var previousElementHeight = 0;
         let starTerms = ["One Star", "Two Star", "Three Star", "Four Star", "Five Star"]
 
         var images = vis.svg.selectAll("image")
@@ -96,8 +84,6 @@ class HelpfulChart {
             .attr("y", function(d, i) {
                 var y = 50;
                 if(i !== 0) {
-                    let previousHeight = (500 * (244 / 1284)) * radiusScale(vis.displayData[i-1].count)
-                    
                     for(let j = 0; j < i; j++) {
                         y += (500 * (244 / 1284)) * radiusScale(vis.displayData[j].count) + 75
                     }
@@ -115,7 +101,6 @@ class HelpfulChart {
         text.enter()
             .append("text")
             .merge(text)
-            
             .attr("text-anchor", "middle")
             .attr("fill", "white")
             .attr("font-size", "16px")
@@ -128,8 +113,6 @@ class HelpfulChart {
             .attr("y", function(d, i) {
                 var y = 30;
                 if(i !== 0) {
-                    let previousHeight = (500 * (244 / 1284)) * radiusScale(vis.displayData[i-1].count)
-                    
                     for(let j = 0; j < i; j++) {
                         y += (500 * (244 / 1284)) * radiusScale(vis.displayData[j].count) + 75
                     }

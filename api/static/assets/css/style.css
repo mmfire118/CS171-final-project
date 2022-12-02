@@ -154,7 +154,7 @@ body.swal2-shown.swal2-height-auto {
 	height: 700px;
 }
 
-#helpful-div{
+#helpful-div {
 	height: 1000px;
 }
 
@@ -167,24 +167,37 @@ body.swal2-shown.swal2-height-auto {
 	box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.19);
 	color: #34495e;
 	z-index: 10;
-  }
-  
-  .hidden {
-	display: none;
-  }
+}
 
-  input {
+#words-tooltip > p {
+	color: #95a5a6;
+}
+
+#words-tooltip > h4 {
+	color: #34495e;
+	font-weight: 800;
+}
+
+.hidden {
+	display: none;
+}
+
+input {
 	padding: 10px;
 	border-radius: 10px;
 	margin-right: 10px;
 	margin-left: 10px;
-  }
-  
-  input:focus, input:focus-visible {
+}
+
+input:focus, input:focus-visible {
 	border-color: #7367F0;
 	border-width: 3px;
-  }
+}
 
-  #word-freq-result {
+#word-freq-result {
 	margin-bottom: 10px;
-  }
+}
+
+/* .dark-layout body, body.dark-layout {
+	background: #ecf0f1;
+} */
