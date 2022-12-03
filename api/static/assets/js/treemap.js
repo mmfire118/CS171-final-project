@@ -154,7 +154,7 @@ class TreeMap {
             .range(["white", "#e74c3c"])
 
         vis.fontScale = d3.scaleLinear().domain([vis.min, vis.max])
-            .range([10, 30])
+            .range([10, Math.min(vis.width / 50, 30)])
         
 
         var root = d3.stratify()
@@ -346,7 +346,7 @@ class TreeMap {
             })
             .attr("font-size", d=> {
                 if(vis.filteredData.length <= 3) {
-                    return 30;
+                    return Math.min(vis.width / 50, 30);
                 } else {
                     return vis.fontScale(d.data.value);
                 }
@@ -366,13 +366,13 @@ class TreeMap {
             .style("transform", function(d) {
                 if(d.y1 - d.y0 > d.x1 - d.x0) {
                     if(vis.filteredData.length <= 3) {
-                        return "translate(" + (30 * 1.7) + "px, -10px) rotate(90deg) "
+                        return "translate(" + (Math.min(vis.width / 50, 30) * 1.7) + "px, -10px) rotate(90deg) "
                     } else {
                         return "translate(" + (vis.fontScale(d.data.value) * 1.7) + "px, -10px) rotate(90deg) "
                     }
                 } else {
                     if(vis.filteredData.length <= 3) {
-                        return "translate(0," + (30 / 2) + "px)";
+                        return "translate(0," + (Math.min(vis.width / 50, 30) / 2) + "px)";
                     } else {
                         return "translate(0," + (vis.fontScale(d.data.value) / 2) + "px)";
                     }
@@ -386,7 +386,7 @@ class TreeMap {
             
             .attr("font-size", d=> {
                 if(vis.filteredData.length <= 3) {
-                    return 30 * 0.9;
+                    return Math.min(vis.width / 50, 30) * 0.9;
                 } else {
                     return vis.fontScale(d.data.value);
                 }
@@ -413,13 +413,13 @@ class TreeMap {
             .style("transform", function(d) {
                 if(d.y1 - d.y0 > d.x1 - d.x0) {
                     if(vis.filteredData.length <= 3) {
-                        return "translate(" + (30 / 2) + "px, -10px) rotate(90deg) "
+                        return "translate(" + (Math.min(vis.width / 50, 30) / 2) + "px, -10px) rotate(90deg) "
                     } else {
                         return "translate(" + (vis.fontScale(d.data.value) / 2) + "px, -10px) rotate(90deg) "
                     }
                 } else {
                     if(vis.filteredData.length <= 3) {
-                        return "translate(0," + (30 * 1.7) + "px)";
+                        return "translate(0," + (Math.min(vis.width / 50, 30) * 1.7) + "px)";
                     } else {
                         return "translate(0," + (vis.fontScale(d.data.value) * 1.7) + "px)";
                     }
