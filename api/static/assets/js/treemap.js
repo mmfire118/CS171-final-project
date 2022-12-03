@@ -31,7 +31,6 @@ class TreeMap {
 
         vis.selected_opt = d3.select('#treemap-select').property("value");
 
-        console.log(vis.data)
         vis.negativeData = [];
         vis.negativeData.push({
             name: "Origin"
@@ -129,8 +128,6 @@ class TreeMap {
             vis.filteredData = vis.totalData;
         }
 
-        console.log(vis.filteredData)
-
         vis.updateVis()
     }
 
@@ -161,8 +158,8 @@ class TreeMap {
         
 
         var root = d3.stratify()
-            .id(function(d) { return d.name; })   // Name of the entity (column name is name in csv)
-            .parentId(function(d) { return d.parent; })   // Name of the parent (column name is parent in csv)
+            .id(function(d) { return d.name; })
+            .parentId(function(d) { return d.parent; })
         
         vis.adjustedData = root(vis.filteredData)
 
@@ -174,16 +171,8 @@ class TreeMap {
 
         vis.adjustedData = map(vis.adjustedData)
 
-        console.log(vis.adjustedData.leaves())
-
         var node = vis.svg.selectAll("rect")
-            .data(vis.adjustedData.leaves(), d=> {
-                if(d.category === "positive") {
-                    return "p_" + d.value
-                } else {
-                    return "n_" + d.value
-                }
-            })
+            .data(vis.adjustedData.leaves(), d=> d.data.name)
 
         node.exit()
             .attr("fill-opacity", 1)
@@ -197,7 +186,7 @@ class TreeMap {
         node.enter()
             .append("rect")
             .merge(node)
-            .attr("class", d=> d.data.name.split(' ')[0])
+            .attr("class", d=> d.data.name.split(' ')[0] + d.data.category)
             .attr("stroke", d=> {
                 if(vis.filteredData.length > 3) {
                     if(((vis.max - vis.min) / 2) + vis.min <= d.value) {
@@ -214,17 +203,16 @@ class TreeMap {
                 vis.clickCategory(event, d)
             })
             .on("mouseover", function(event, d) {
-                console.log("TOUCH")
                 d3.select(this)
                     .attr("cursor", "pointer")
                     .transition("stroke")
-                    .duration(400)
+                    .duration(200)
                     .attr("stroke-width", "5px")
             })
             .on("mouseout", function(event, d) {
                 d3.select(this)
                     .transition("stroke")
-                    .duration(400)
+                    .duration(200)
                     .attr("stroke-width", "0px")
             })
             .transition()
@@ -250,13 +238,7 @@ class TreeMap {
             })
             
         var textWrapper = vis.svg.selectAll("g")
-            .data(vis.adjustedData.leaves(), d=> {
-                if(d.category === "positive") {
-                    return "p_" + d.value
-                } else {
-                    return "n_" + d.value
-                }
-            })
+            .data(vis.adjustedData.leaves(), d=> d.data.name)
 
         textWrapper.exit()
             .attr("fill-opacity", 1)
@@ -269,19 +251,20 @@ class TreeMap {
 
         var textWrapperEnter = textWrapper.enter()
             .append("g")
+            .attr("class", d=> d.data.name.split(' ')[0] + d.data.category)
             .on("mouseover", function(event, d) {
                 d3.select(this)
                 .attr("cursor", "pointer")
 
-                d3.select("." + d.data.name.split(' ')[0])
+                d3.select("." + d.data.name.split(' ')[0] + d.data.category)
                     .transition("stroke")
-                    .duration(400)
+                    .duration(200)
                     .attr("stroke-width", "5px")
             })
             .on("mouseout", function(event, d) {
-                d3.select("." + d.data.name.split(' ')[0])
+                d3.select("." + d.data.name.split(' ')[0] + d.data.category)
                     .transition("stroke")
-                    .duration(400)
+                    .duration(200)
                     .attr("stroke-width", "0")
             })
             .on("click", function(event, d) {
@@ -397,8 +380,6 @@ class TreeMap {
     clickCategory(event, d) {
         let vis = this;
 
-        console.log("click")
-        console.log(vis.filteredData)
         if(vis.filteredData.length > 3) {
             let category = d.data.name
             let newData = [];
@@ -423,33 +404,32 @@ class TreeMap {
                 }
             })
             vis.filteredData = newData
-            console.log(vis.filteredData)
+
             vis.updateVis();
         } else {
-            console.log("HELLO")
             if(d.data.category === "Positive") {
+                d3.select("rect." + d.data.name.split(' ')[0] + "Negative").raise()
+                d3.select("g." + d.data.name.split(' ')[0] + "Negative").raise()
                 d3.select('#treemap-select').property("value", "positive");
                 vis.wrangleData();
                 return;
             } else if(d.data.category === "Negative") {
+                d3.select("rect." + d.data.name.split(' ')[0] + "Positive").raise()
+                d3.select("g." + d.data.name.split(' ')[0] + "Positive").raise()
                 d3.select('#treemap-select').property("value", "negative");
                 vis.wrangleData();
                 return
             } else {
-                console.log(d)
                 if(d.data.category === "Positive") {
                     d3.select('#treemap-select').property("value", "positive");
                     vis.wrangleData();
                     return
-                    // vis.filteredData = vis.positiveData
                 } else {
-                    // vis.filteredData = vis.negativeData
                     d3.select('#treemap-select').property("value", "negative");
                     vis.wrangleData();
                     return
                 }
             }
-            vis.updateVis();
         }
     }
 }
