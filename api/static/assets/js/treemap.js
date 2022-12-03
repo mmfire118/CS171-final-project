@@ -124,6 +124,9 @@ class TreeMap {
             .range(["white", "#2ecc71"])
         vis.negativeColor = d3.scaleLinear().domain([vis.min, vis.max])
             .range(["white", "#e74c3c"])
+
+        vis.fontScale = d3.scaleLinear().domain([vis.min, vis.max])
+            .range([10, 30])
         
 
         var root = d3.stratify()
@@ -145,47 +148,54 @@ class TreeMap {
         var node = vis.svg.selectAll("rect")
             .data(vis.adjustedData.leaves(), d=> d.id)
 
-        node.exit().remove();
+        node.exit()
+            .attr("fill-opacity", 1)
+            .attr("stroke-opacity", 1)
+            .transition()
+            .duration(500)
+            .attr("fill-opacity", 0)
+            .attr("stroke-opacity", 0)
+            .remove();
 
         node.enter()
             .append("rect")
             .merge(node)
-            .on("click", function(event, d) {
+            .attr("class", d=> d.data.name.split(' ')[0])
+            .attr("stroke", d=> {
                 if(vis.filteredData.length > 3) {
-                    let category = d.data.name
-                    let newData = [];
-                    vis.filteredData.forEach(element => {
-                        if(element.name === category) {
-                            newData.push(element)
-                            if(vis.selected_opt === "negative") {
-                                vis.positiveData.forEach(element => {
-                                    if(element.name === category) {
-                                        newData.push(element)
-                                    }
-                                });
-                            } else {
-                                vis.negativeData.forEach(element => {
-                                    if(element.name === category) {
-                                        newData.push(element)
-                                    }
-                                });
-                            }
-                        } else if(element.name === "Origin") {
-                            newData.push(element)
-                        }
-                    })
-                    vis.filteredData = newData
-                    console.log(vis.filteredData)
-                    vis.updateVis();
+                    if(((vis.max - vis.min) / 2) + vis.min <= d.value) {
+                        return "white";
+                    } else {
+                        return color;
+                    }
+                } else {
+                    return "white";
                 }
             })
+            .attr("stroke-width", "0")
+            .on("click", function(event, d) {
+                vis.clickCategory(event, d)
+            })
+            .on("mouseover", function(event, d) {
+                console.log("TOUCH")
+                d3.select(this)
+                    .attr("cursor", "pointer")
+                    .transition("stroke")
+                    .duration(400)
+                    .attr("stroke-width", "5px")
+            })
+            .on("mouseout", function(event, d) {
+                d3.select(this)
+                    .transition("stroke")
+                    .duration(400)
+                    .attr("stroke-width", "0px")
+            })
             .transition()
-            .duration(800)
+            .duration(1000)
             .attr('x', function (d) { return d.x0; })
             .attr('y', function (d) { return d.y0; })
             .attr('width', function (d) { return d.x1 - d.x0; })
             .attr('height', function (d) { return d.y1 - d.y0; })
-            .style("stroke", "black")
             .style("fill", d=> {
                 if(vis.filteredData.length > 3) {
                     if(d.data.category === "Positive") {
@@ -205,23 +215,52 @@ class TreeMap {
         var textWrapper = vis.svg.selectAll("g")
             .data(vis.adjustedData.leaves(), d=> d.id)
 
-        textWrapper.exit().remove();
+        textWrapper.exit()
+            .attr("fill-opacity", 1)
+            .attr("stroke-opacity", 1)
+            .transition()
+            .duration(500)
+            .attr("fill-opacity", 0)
+            .attr("stroke-opacity", 0)
+            .remove();
 
         var textWrapperEnter = textWrapper.enter()
             .append("g")
+            .on("mouseover", function(event, d) {
+                d3.select(this)
+                .attr("cursor", "pointer")
+
+                d3.select("." + d.data.name.split(' ')[0])
+                    .transition("stroke")
+                    .duration(400)
+                    .attr("stroke-width", "5px")
+            })
+            .on("mouseout", function(event, d) {
+                d3.select("." + d.data.name.split(' ')[0])
+                    .transition("stroke")
+                    .duration(400)
+                    .attr("stroke-width", "0")
+            })
+            .on("click", function(event, d) {
+                vis.clickCategory(event, d)
+            })
             
         textWrapperEnter.append("text")
+            .attr("class", "category")
+
+        textWrapperEnter.append("text")
+            .attr("class", "value")
 
         textWrapper = textWrapperEnter.merge(textWrapper)
 
         textWrapper
             .transition()
-            .duration(800)
+            .duration(1000)
             .attr("transform", d=> "translate(" + Math.round((d.x0+10)) + ", " + Math.round(d.y0+20) + ")")
 
-        textWrapper.select("text")
+        textWrapper.select("text.category")
             .transition()
-            .duration(800)
+            .duration(1000)
             .text(function(d){ 
                 if(vis.filteredData.length <= 3) {
                     return d.data.name + " " + d.data.category
@@ -229,7 +268,14 @@ class TreeMap {
                     return d.data.name
                 }
             })
-            .attr("font-size", "12px")
+            .attr("font-size", d=> {
+                if(vis.filteredData.length <= 3) {
+                    return 30;
+                } else {
+                    return vis.fontScale(d.data.value);
+                }
+            })
+            .attr("font-weight", "600")
             .attr("fill", d=> {
                 if(vis.filteredData.length > 3) {
                     if(((vis.max - vis.min) / 2) + vis.min <= d.value) {
@@ -241,12 +287,108 @@ class TreeMap {
                     return "white";
                 }
             })
-            .style("transform", d=> {
+            .style("transform", function(d) {
                 if(d.y1 - d.y0 > d.x1 - d.x0) {
-                    return "translate(5px, -10px) rotate(90deg) "
+                    if(vis.filteredData.length <= 3) {
+                        return "translate(" + (30 * 1.7) + "px, -10px) rotate(90deg) "
+                    } else {
+                        return "translate(" + (vis.fontScale(d.data.value) * 1.7) + "px, -10px) rotate(90deg) "
+                    }
                 } else {
-                    return ""
+                    if(vis.filteredData.length <= 3) {
+                        return "translate(0," + (30 / 2) + "px)";
+                    } else {
+                        return "translate(0," + (vis.fontScale(d.data.value) / 2) + "px)";
+                    }
                 }
             })
+        
+        textWrapper.select("text.value")
+            .transition()
+            .duration(1000)
+            .text(d=> "Avg Length " + Math.round(d.data.value) + " words")
+            .attr("font-size", d=> {
+                if(vis.filteredData.length <= 3) {
+                    return 30 * 0.9;
+                } else {
+                    return vis.fontScale(d.data.value);
+                }
+            })
+            .attr("fill", d=> {
+                if(vis.filteredData.length > 3) {
+                    if(((vis.max - vis.min) / 2) + vis.min <= d.value) {
+                        return "white";
+                    } else {
+                        return color;
+                    }
+                } else {
+                    return "white";
+                }
+            })
+            .attr("opacity", "0.75")
+            .style("transform", d=> {
+                if(d.y1 - d.y0 > d.x1 - d.x0) {
+                    return "translate(" + (vis.fontScale(d.data.value) / 2) + "px, -10px) rotate(90deg) "
+                } else {
+                    return "translate(0," + (vis.fontScale(d.data.value) * 1.7) + "px)";
+                }
+            })
+            .style("transform", function(d) {
+                if(d.y1 - d.y0 > d.x1 - d.x0) {
+                    if(vis.filteredData.length <= 3) {
+                        return "translate(" + (30 / 2) + "px, -10px) rotate(90deg) "
+                    } else {
+                        return "translate(" + (vis.fontScale(d.data.value) / 2) + "px, -10px) rotate(90deg) "
+                    }
+                } else {
+                    if(vis.filteredData.length <= 3) {
+                        return "translate(0," + (30 * 1.7) + "px)";
+                    } else {
+                        return "translate(0," + (vis.fontScale(d.data.value) * 1.7) + "px)";
+                    }
+                }
+            })
+    }
+
+    clickCategory(event, d) {
+        let vis = this;
+
+        console.log("click")
+        console.log(vis.filteredData)
+        if(vis.filteredData.length > 3) {
+            let category = d.data.name
+            let newData = [];
+            vis.filteredData.forEach(element => {
+                if(element.name === category) {
+                    newData.push(element)
+                    if(vis.selected_opt === "negative") {
+                        vis.positiveData.forEach(element => {
+                            if(element.name === category) {
+                                newData.push(element)
+                            }
+                        });
+                    } else {
+                        vis.negativeData.forEach(element => {
+                            if(element.name === category) {
+                                newData.push(element)
+                            }
+                        });
+                    }
+                } else if(element.name === "Origin") {
+                    newData.push(element)
+                }
+            })
+            vis.filteredData = newData
+            console.log(vis.filteredData)
+            vis.updateVis();
+        } else {
+            console.log("HELLO")
+            if(vis.selected_opt === "positive") {
+                vis.filteredData = vis.positiveData
+            } else {
+                vis.filteredData = vis.negativeData
+            }
+            vis.updateVis();
+        }
     }
 }
