@@ -177,7 +177,13 @@ class TreeMap {
         console.log(vis.adjustedData.leaves())
 
         var node = vis.svg.selectAll("rect")
-            .data(vis.adjustedData.leaves(), d=> d.id)
+            .data(vis.adjustedData.leaves(), d=> {
+                if(d.category === "positive") {
+                    return "p_" + d.value
+                } else {
+                    return "n_" + d.value
+                }
+            })
 
         node.exit()
             .attr("fill-opacity", 1)
@@ -244,7 +250,13 @@ class TreeMap {
             })
             
         var textWrapper = vis.svg.selectAll("g")
-            .data(vis.adjustedData.leaves(), d=> d.id)
+            .data(vis.adjustedData.leaves(), d=> {
+                if(d.category === "positive") {
+                    return "p_" + d.value
+                } else {
+                    return "n_" + d.value
+                }
+            })
 
         textWrapper.exit()
             .attr("fill-opacity", 1)
@@ -414,10 +426,14 @@ class TreeMap {
             vis.updateVis();
         } else {
             console.log("HELLO")
-            if(vis.selected_opt === "positive") {
-                vis.filteredData = vis.positiveData
-            } else if(vis.selected_opt === "negative") {
-                vis.filteredData = vis.negativeData
+            if(d.data.category === "Positive") {
+                d3.select('#treemap-select').property("value", "positive");
+                vis.wrangleData();
+                return;
+            } else if(d.data.category === "Negative") {
+                d3.select('#treemap-select').property("value", "negative");
+                vis.wrangleData();
+                return
             } else {
                 console.log(d)
                 if(d.data.category === "Positive") {
