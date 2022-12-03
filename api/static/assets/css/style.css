@@ -201,8 +201,3 @@ input:focus, input:focus-visible {
 /* .dark-layout body, body.dark-layout {
 	background: #ecf0f1;
 } */
-
-.brand-logo {
-	z-index: 1000;
-	position: fixed;
-}
