@@ -347,9 +347,10 @@ class TreeMap {
             })
         
         textWrapper.select("text.value")
+        .html(d=> 'Avg Length: <tspan font-weight="800">' + Math.round(d.data.value) + ' words</tspan>')
             .transition()
             .duration(1000)
-            .text(d=> "Avg Length " + Math.round(d.data.value) + " words")
+            
             .attr("font-size", d=> {
                 if(vis.filteredData.length <= 3) {
                     return 30 * 0.9;
