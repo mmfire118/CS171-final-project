@@ -65,6 +65,10 @@ function filterWords() {
     myBubbleGraph.wrangleData();
 }
 
+function filterTreeMap() {
+    myTreeMap.wrangleData();
+}
+
 function clearExtraBubbles() {
     myBubbleGraph.clearBubbles();
 }

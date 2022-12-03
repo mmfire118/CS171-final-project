@@ -23,45 +23,46 @@ class TreeMap {
             .attr("height", vis.height)
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
 
-        // add title
-        vis.svg.append('g')
-            .attr('class', 'title')
-            .attr('id', 'map-title')
-            .append('text')
-            .text('Covid Case Statistics in the U.S.')
-            .attr('transform', `translate(${vis.width / 2}, 20)`)
-            .attr('text-anchor', 'middle');
-
         vis.wrangleData();
     }
 
     wrangleData() {
         let vis = this;
 
+        vis.selected_opt = d3.select('#treemap-select').property("value");
+
         console.log(vis.data)
-        vis.filteredData = [];
-        vis.filteredData.push({
+        vis.negativeData = [];
+        vis.negativeData.push({
+            name: "Origin"
+        })
+        vis.positiveData = [];
+        vis.positiveData.push({
             name: "Origin"
         })
 
-        vis.data.forEach(function(part, index, theArray) {
-            vis.data[index].Timestamp = vis.parseDate(theArray[index].Timestamp)
-            vis.data[index].Num_Words = +vis.data[index].Num_Words;
-            vis.data[index].Rating = +vis.data[index].Rating;
-            if(vis.data[index].Rating >= 3) {
-                vis.data[index]['Positive'] = true;
+        vis.dataCopy = vis.data
+
+        vis.dataCopy.forEach(function(part, index, theArray) {
+            vis.dataCopy[index].Timestamp = vis.parseDate(theArray[index].Timestamp)
+            vis.dataCopy[index].Num_Words = +vis.dataCopy[index].Num_Words;
+            vis.dataCopy[index].Rating = +vis.dataCopy[index].Rating;
+            if(vis.dataCopy[index].Rating > 3) {
+                vis.dataCopy[index]['Positive'] = true;
+            } else if(vis.dataCopy[index].Rating === 3) {
+                //Ignore(neither positive nor negative)
             } else {
-                vis.data[index]['Positive'] = false;
+                vis.dataCopy[index]['Positive'] = false;
             }
         })
 
-        vis.minimumDate = d3.min(vis.data, function(d){ return d.Timestamp })
-        vis.maximumDate = d3.max(vis.data, function(d){ return d.Timestamp })
+        vis.minimumDate = d3.min(vis.dataCopy, function(d){ return d.Timestamp })
+        vis.maximumDate = d3.max(vis.dataCopy, function(d){ return d.Timestamp })
 
-        vis.data = d3.group(vis.data, d => d.Category)
+        vis.dataCopy = d3.group(vis.dataCopy, d => d.Category)
 
         
-        vis.data.forEach(element => {
+        vis.dataCopy.forEach(element => {
             let positiveWordSum = 0;
             let numPositive = 0;
 
@@ -78,16 +79,29 @@ class TreeMap {
                 }
             })
 
-            let positiveAvg = positiveWordSum / numPositive;
-            let negativeAvg = negativeWordSum / numNegative;
-            
-            vis.filteredData.push({
+            let positiveAverage = positiveWordSum / numPositive;
+            let negativeAverage = negativeWordSum / numNegative;
+
+            vis.negativeData.push({
                 name: element[0].Category,
                 parent: 'Origin',
-                value: positiveAvg
-                // negativeAverage: negativeAvg
+                value: negativeAverage,
+                category: "Negative"
+            });
+
+            vis.positiveData.push({
+                name: element[0].Category,
+                parent: 'Origin',
+                value: positiveAverage,
+                category: "Positive"
             });
         });
+
+        if(vis.selected_opt === "negative") {
+            vis.filteredData = vis.negativeData;
+        } else {
+            vis.filteredData = vis.positiveData;
+        }
 
         console.log(vis.filteredData)
 
@@ -97,45 +111,142 @@ class TreeMap {
     updateVis() {
         let vis = this;
 
+        var color = "#2ecc71"
+        if (vis.selected_opt == "negative") {
+            color = "#e74c3c";
+        } else if (vis.selected_opt == "all") {
+            color = "#9b59b6"
+        }
+
+        vis.max = d3.max(vis.filteredData, d => d.value);
+        vis.min = d3.min(vis.filteredData, d => d.value);
+        vis.positiveColor = d3.scaleLinear().domain([vis.min, vis.max])
+            .range(["white", "#2ecc71"])
+        vis.negativeColor = d3.scaleLinear().domain([vis.min, vis.max])
+            .range(["white", "#e74c3c"])
+        
+
         var root = d3.stratify()
             .id(function(d) { return d.name; })   // Name of the entity (column name is name in csv)
             .parentId(function(d) { return d.parent; })   // Name of the parent (column name is parent in csv)
         
-        vis.filteredData = root(vis.filteredData)
+        vis.adjustedData = root(vis.filteredData)
 
-        vis.filteredData.sum(function(d) { return d.value })
+        vis.adjustedData.sum(function(d) { return d.value })
 
         var map = d3.treemap()
             .size([vis.width, vis.height])
             .padding(4)
 
-        vis.filteredData = map(vis.filteredData)
+        vis.adjustedData = map(vis.adjustedData)
 
-        console.log(vis.filteredData.leaves())
+        console.log(vis.adjustedData.leaves())
 
-        vis.svg
-            .selectAll("rect")
-            .data(vis.filteredData.leaves())
-            .enter()
+        var node = vis.svg.selectAll("rect")
+            .data(vis.adjustedData.leaves(), d=> d.id)
+
+        node.exit().remove();
+
+        node.enter()
             .append("rect")
+            .merge(node)
+            .on("click", function(event, d) {
+                if(vis.filteredData.length > 3) {
+                    let category = d.data.name
+                    let newData = [];
+                    vis.filteredData.forEach(element => {
+                        if(element.name === category) {
+                            newData.push(element)
+                            if(vis.selected_opt === "negative") {
+                                vis.positiveData.forEach(element => {
+                                    if(element.name === category) {
+                                        newData.push(element)
+                                    }
+                                });
+                            } else {
+                                vis.negativeData.forEach(element => {
+                                    if(element.name === category) {
+                                        newData.push(element)
+                                    }
+                                });
+                            }
+                        } else if(element.name === "Origin") {
+                            newData.push(element)
+                        }
+                    })
+                    vis.filteredData = newData
+                    console.log(vis.filteredData)
+                    vis.updateVis();
+                }
+            })
+            .transition()
+            .duration(800)
             .attr('x', function (d) { return d.x0; })
             .attr('y', function (d) { return d.y0; })
             .attr('width', function (d) { return d.x1 - d.x0; })
             .attr('height', function (d) { return d.y1 - d.y0; })
             .style("stroke", "black")
-            .style("fill", "#69b3a2");
+            .style("fill", d=> {
+                if(vis.filteredData.length > 3) {
+                    if(d.data.category === "Positive") {
+                        return vis.positiveColor(d.data.value)
+                    } else {
+                        return vis.negativeColor(d.data.value)
+                    }
+                } else {
+                    if(d.data.category === "Positive") {
+                        return "#2ecc71";
+                    } else {
+                        return "#e74c3c";
+                    }
+                }
+            })
+            
+        var textWrapper = vis.svg.selectAll("g")
+            .data(vis.adjustedData.leaves(), d=> d.id)
 
-        // and to add the text labels
-        vis.svg
-            .selectAll("labels")
-            .data(vis.filteredData.leaves())
-            .enter()
-            .append("text")
-            .attr("x", function(d){ return d.x0+10})    // +10 to adjust position (more right)
-            .attr("y", function(d){ return d.y0+20})    // +20 to adjust position (lower)
-            .text(function(d){ return d.data.name})
+        textWrapper.exit().remove();
+
+        var textWrapperEnter = textWrapper.enter()
+            .append("g")
+            
+        textWrapperEnter.append("text")
+
+        textWrapper = textWrapperEnter.merge(textWrapper)
+
+        textWrapper
+            .transition()
+            .duration(800)
+            .attr("transform", d=> "translate(" + Math.round((d.x0+10)) + ", " + Math.round(d.y0+20) + ")")
+
+        textWrapper.select("text")
+            .transition()
+            .duration(800)
+            .text(function(d){ 
+                if(vis.filteredData.length <= 3) {
+                    return d.data.name + " " + d.data.category
+                } else {
+                    return d.data.name
+                }
+            })
             .attr("font-size", "12px")
-            .attr("fill", "white")
+            .attr("fill", d=> {
+                if(vis.filteredData.length > 3) {
+                    if(((vis.max - vis.min) / 2) + vis.min <= d.value) {
+                        return "white";
+                    } else {
+                        return color;
+                    }
+                } else {
+                    return "white";
+                }
+            })
+            .style("transform", d=> {
+                if(d.y1 - d.y0 > d.x1 - d.x0) {
+                    return "translate(5px, -10px) rotate(90deg) "
+                } else {
+                    return ""
+                }
+            })
     }
-
 }

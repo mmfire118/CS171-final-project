@@ -114,11 +114,15 @@
                                 <label for="word-freq">Look up the frequency of words here:</label>
                                 <input type="text" id="word-freq" name="word-freq" placeholder="Type a word here">
                                 <button class="btn-sm" onclick="displayWordFreq()">Add Word Bubble</button>
-                                <button class="btn-sm btn-danger" onclick="clearExtraBubbles()">Clear</button>
+                                <button class="btn-sm btn-danger" onclick="clearExtraBubbles()">Reset</button>
                             </div>
                             <div class="col-12 text-center mt-2">
                                 <h3 class="mt-50">Do reviews with higher numbers of words tend to be more positive or negative?</h3>
                                 <p class="mb-1">This is a visualization that shows the average length (in words) of reviews for a given category. The categories with the most reviews don’t necessarily have the longest reviews. Generally, one can assume that longer reviews mean more polarizing items, as a person who writes an in-depth review concerning some object likely has strong feelings about it, whether positive or negative.</p>
+                                <select id="treemap-select" class="form-select text-center mb-1" name="filter-treemap" onchange="filterTreeMap()">
+                                    <option value="negative">Negative</option>
+                                    <option value="positive">Positive</option>
+                                </select>
                                 <div id="rising-insight">
                                 
                                 </div>
