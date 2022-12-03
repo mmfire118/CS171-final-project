@@ -301,18 +301,17 @@ class TreeMap {
 
         var textWrapperEnter = textWrapper.enter()
             .append("g")
-            .attr("class", d=> d.data.name.split(' ')[0] + d.data.category)
             .on("mouseover", function(event, d) {
                 d3.select(this)
                 .attr("cursor", "pointer")
 
-                d3.select("." + d.data.name.split(' ')[0] + d.data.category)
+                d3.select("rect." + d.data.name.split(' ')[0] + d.data.category)
                     .transition("stroke")
                     .duration(200)
                     .attr("stroke-width", "5px")
             })
             .on("mouseout", function(event, d) {
-                d3.select("." + d.data.name.split(' ')[0] + d.data.category)
+                d3.select("rect." + d.data.name.split(' ')[0] + d.data.category)
                     .transition("stroke")
                     .duration(200)
                     .attr("stroke-width", "0")
@@ -330,6 +329,7 @@ class TreeMap {
         textWrapper = textWrapperEnter.merge(textWrapper)
 
         textWrapper
+            .attr("class", d=> d.data.name.split(' ')[0] + d.data.category)
             .transition()
             .duration(1000)
             .attr("transform", d=> "translate(" + Math.round((d.x0+10)) + ", " + Math.round(d.y0+20) + ")")
@@ -380,10 +380,9 @@ class TreeMap {
             })
         
         textWrapper.select("text.value")
-        .html(d=> 'Avg Length: <tspan font-weight="800">' + Math.round(d.data.value) + ' words</tspan>')
+            .html(d=> 'Avg Length: <tspan font-weight="800">' + Math.round(d.data.value) + ' words</tspan>')
             .transition()
             .duration(1000)
-            
             .attr("font-size", d=> {
                 if(vis.filteredData.length <= 3) {
                     return Math.min(vis.width / 50, 30) * 0.9;
@@ -468,7 +467,7 @@ class TreeMap {
                 d3.select("g." + d.data.name.split(' ')[0] + "Positive").raise()
                 d3.select('#treemap-select').property("value", "negative");
                 vis.wrangleData();
-                return
+                return;
             } else {
                 if(d.data.category === "Positive") {
                     d3.select('#treemap-select').property("value", "positive");
