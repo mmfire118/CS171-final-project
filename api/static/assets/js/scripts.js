@@ -71,6 +71,7 @@ function filterTreeMap() {
 
 function clearExtraBubbles() {
     myBubbleGraph.clearBubbles();
+    $('#word-freq').val("")
 }
 
 function filterHelpful() {

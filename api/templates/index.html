@@ -75,90 +75,100 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="top-row" class="section row">
-                            <div class="col-12 text-center mt-2">
-                                <h3 class="mt-50">What are the most common words used in negative or positive reviews?</h3>
-                                <p class="mb-1">This is a compilation of the most common words across our set of Amazon reviews.</p>
-                                <select id="words-select" class="form-select text-center mb-1" name="filter-words" onchange="filterWords()">
-                                    <option value="negative">Negative</option>
-                                    <option value="positive">Positive</option>
-                                    <option value="all">All</option>
-                                </select>
-                                <div id="hook-div">
-                                    <div id="words-tooltip" class="hidden"><p id="appeared"></p><h4 id="value"></h4><p id="sub-value"></p></div>
-                                </div>
-                                <h4 id="word-freq-result"> </h4>
-                                <label for="word-freq">Look up the frequency of words here:</label>
-                                <input type="text" id="word-freq" name="word-freq" placeholder="Type a word here">
-                                <button class="btn-sm" onclick="displayWordFreq()">Add Word Bubble</button>
-                                <button class="btn-sm btn-danger" onclick="clearExtraBubbles()">Reset</button>
-                            </div>
-                        </div>
-                        <div class="section row">
-                            <div class="col-12 text-center mt-2">
-                                <h3 class="mt-50">Do reviews with higher numbers of words tend to be more positive or negative?</h3>
-                                <p class="mb-1">This is a visualization that shows the average length (in words) of reviews for a given category. The categories with the most reviews don’t necessarily have the longest reviews. Generally, one can assume that longer reviews mean more polarizing items, as a person who writes an in-depth review concerning some object likely has strong feelings about it, whether positive or negative.</p>
-                                <select id="treemap-select" class="form-select text-center mb-1" name="filter-treemap" onchange="filterTreeMap()">
-                                    <option value="negative">Negative</option>
-                                    <option value="positive">Positive</option>
-                                </select>
-                                <div id="rising-insight">
-                                
+                        <div id="top-row" class="section">
+                            <div class="col-12 text-center mt-2 w-100">
+                                <div class="p-3">
+                                    <h3 class="mt-50">What are the most common words used in negative or positive reviews?</h3>
+                                    <p class="mb-1">This is a compilation of the most common words across our set of Amazon reviews.</p>
+                                    <select id="words-select" class="form-select text-center mb-1" name="filter-words" onchange="filterWords()">
+                                        <option value="negative">Negative</option>
+                                        <option value="positive">Positive</option>
+                                        <option value="all">All</option>
+                                    </select>
+                                    <div id="hook-div">
+                                        <div id="words-tooltip" class="hidden"><p id="appeared"></p><h4 id="value"></h4><p id="sub-value"></p></div>
+                                    </div>
+                                    <h4 id="word-freq-result"> </h4>
+                                    <label for="word-freq">Look up the frequency of words here:</label>
+                                    <input type="text" id="word-freq" name="word-freq" placeholder="Type a word here">
+                                    <button class="btn-sm" onclick="displayWordFreq()">Add Word Bubble</button>
+                                    <button class="btn-sm btn-danger" onclick="clearExtraBubbles()">Reset</button>
                                 </div>
                             </div>
                         </div>
-                        <div id="mid-row" class="section row">
+                        <div class="section">
                             <div class="col-12 text-center mt-2">
-                                <h3 class="mt-50">How the number of item reviews by category changes over time?</h3>
-                                <p class="mb-1">This is a visualization that shows the average rating for objects in a given category over time. Generally, these average ratings fluctuate around values close to 4.5, and stay relatively constant over time, especially as the number of ratings on the site increases. This suggests that the customer base as a whole is generally satisfied with the items they procure via Amazon.</p>
-                                <select id="solution-select" class="form-select text-center mb-1" name="category-select" onchange="solutionCatChange()">
-
-                                </select>
-                                <div id="solution-div" class="line-graph">
+                                <div class="p-3">
+                                    <h3 class="mt-50">Do reviews with higher numbers of words tend to be more positive or negative?</h3>
+                                    <p class="mb-1">This is a visualization that shows the average length (in words) of reviews for a given category. The categories with the most reviews don’t necessarily have the longest reviews. Generally, one can assume that longer reviews mean more polarizing items, as a person who writes an in-depth review concerning some object likely has strong feelings about it, whether positive or negative.</p>
+                                    <select id="treemap-select" class="form-select text-center mb-1" name="filter-treemap" onchange="filterTreeMap()">
+                                        <option value="negative">Negative</option>
+                                        <option value="positive">Positive</option>
+                                    </select>
+                                    <div id="rising-insight">
                                     
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="section row">
+                        <div id="mid-row" class="section">
                             <div class="col-12 text-center mt-2">
-                                <h3 class="mt-50">Phases of interest: distribution of the average item rating by category</h3>
-                                <p class="mb-1">This is a visualization that shows the distribution of the number of reviews in a given category over time. Note that, despite the category, the number of reviews tends to peak around 2016 and then decrease.</p>
-                                <p class="mb-1">It seems that towards the end of the 2010s, people generally began to leave fewer reviews on Amazon products. This phenomenon was observed across virtually all categories on the site, and it was not accompanied by any change in how people generally rated the items they received. As such, it follows that people must be engaging less with Amazon as a whole; once they have ordered their products, they simply do not care to leave reviews.</p>
-                                <select id="main-message-select" class="form-select text-center mb-1" name="category-select" onchange="mainMessageCatChange()">
-
-                                </select>
-                                <div id="main-message" class="line-graph">
+                                <div class="p-3">
+                                    <h3 class="mt-50">How the number of item reviews by category changes over time?</h3>
+                                    <p class="mb-1">This is a visualization that shows the average rating for objects in a given category over time. Generally, these average ratings fluctuate around values close to 4.5, and stay relatively constant over time, especially as the number of ratings on the site increases. This suggests that the customer base as a whole is generally satisfied with the items they procure via Amazon.</p>
+                                    <select id="solution-select" class="form-select text-center mb-1" name="category-select" onchange="solutionCatChange()">
+    
+                                    </select>
+                                    <div id="solution-div" class="line-graph">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="section">
+                            <div class="col-12 text-center mt-2">
+                                <div class="p-3">
+                                    <h3 class="mt-50">Phases of interest: distribution of the average item rating by category</h3>
+                                    <p class="mb-1">This is a visualization that shows the distribution of the number of reviews in a given category over time. Note that, despite the category, the number of reviews tends to peak around 2016 and then decrease.</p>
+                                    <p class="mb-1">It seems that towards the end of the 2010s, people generally began to leave fewer reviews on Amazon products. This phenomenon was observed across virtually all categories on the site, and it was not accompanied by any change in how people generally rated the items they received. As such, it follows that people must be engaging less with Amazon as a whole; once they have ordered their products, they simply do not care to leave reviews.</p>
+                                    <select id="main-message-select" class="form-select text-center mb-1" name="category-select" onchange="mainMessageCatChange()">
+    
+                                    </select>
+                                    <div id="main-message" class="line-graph">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="bot-row" class="section">
+                            <div class="col-12 text-center mt-2">
+                                <div class="p-3">
+                                    <h3 class="mt-50">The distribution of "helpful" reviews</h3>
+                                    <p class="mb-1">This is a visualization that shows the summed number of helpful ratings for each average rating.</p>
+                                    <select id="helpful-select" class="form-select text-center mb-1" name="filter-helpful" onchange="filterHelpful()">
+                                        <option value="all">All</option>
+                                        <option value="Patio Lawn and Garden">Patio Lawn and Garden</option>
+                                        <option value="Home and Kitchen">Home and Kitchen</option>
+                                        <option value="Cell Phones and Accessories">Cell Phones and Accessories</option>
+                                        <option value="Automotive">Automotive</option>
+                                        <option value="Office Products">Office Products</option>
+                                        <option value="Musical Instruments">Musical Instruments</option>
+                                        <option value="Pet Supplies">Pet Supplies</option>
+                                        <option value="Movies and TV">Movies and TV</option>
+                                        <option value="Grocery and Gourmet Food">Grocery and Gourmet Food</option>
+                                        <option value="Arts Crafts and Sewing">Arts Crafts and Sewing</option>
+                                        <option value="Video Games">Video Games</option>
+                                        <option value="Toys and Games">Toys and Games</option>
+                                        <option value="Kindle Store">Kindle Store</option>
+                                        <option value="Electronics">Electronics</option>
+                                        <option value="CDs and Vinyl">CDs and Vinyl</option>
+                                        <option value="Sports and Outdoors">Sports and Outdoors</option>
+                                        <option value="Magazine Subscriptions">Magazine Subscriptions</option>
+                                        <option value="Tools and Home Improvement">Tools and Home Improvement</option>
+                                    </select>
+                                    <div id="helpful-div">
                                     
-                                </div>
-                            </div>
-                        </div>
-                        <div id="bot-row" class="section row">
-                            <div class="col-12 text-center mt-2">
-                                <h3 class="mt-50">The distribution of "helpful" reviews</h3>
-                                <p class="mb-1">This is a visualization that shows the summed number of helpful ratings for each average rating.</p>
-                                <select id="helpful-select" class="form-select text-center mb-1" name="filter-helpful" onchange="filterHelpful()">
-                                    <option value="all">All</option>
-                                    <option value="Patio Lawn and Garden">Patio Lawn and Garden</option>
-                                    <option value="Home and Kitchen">Home and Kitchen</option>
-                                    <option value="Cell Phones and Accessories">Cell Phones and Accessories</option>
-                                    <option value="Automotive">Automotive</option>
-                                    <option value="Office Products">Office Products</option>
-                                    <option value="Musical Instruments">Musical Instruments</option>
-                                    <option value="Pet Supplies">Pet Supplies</option>
-                                    <option value="Movies and TV">Movies and TV</option>
-                                    <option value="Grocery and Gourmet Food">Grocery and Gourmet Food</option>
-                                    <option value="Arts Crafts and Sewing">Arts Crafts and Sewing</option>
-                                    <option value="Video Games">Video Games</option>
-                                    <option value="Toys and Games">Toys and Games</option>
-                                    <option value="Kindle Store">Kindle Store</option>
-                                    <option value="Electronics">Electronics</option>
-                                    <option value="CDs and Vinyl">CDs and Vinyl</option>
-                                    <option value="Sports and Outdoors">Sports and Outdoors</option>
-                                    <option value="Magazine Subscriptions">Magazine Subscriptions</option>
-                                    <option value="Tools and Home Improvement">Tools and Home Improvement</option>
-                                </select>
-                                <div id="helpful-div">
-                                
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -226,6 +236,7 @@
                 licenseKey: 'gplv3-license',
                 parallax: true,
                 navigation: true,
+                scrollOverflow: false,
             });
         });
 
