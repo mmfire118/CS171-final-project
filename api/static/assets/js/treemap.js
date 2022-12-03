@@ -208,12 +208,54 @@ class TreeMap {
                     .transition("stroke")
                     .duration(200)
                     .attr("stroke-width", "5px")
+
+                d3.select("#treemap-tooltip")
+                    .style('left', `${event.pageX - vis.margin.left}px`)
+                    .style('top', `${event.pageY - vis.margin.top}px`)
+                    d3.select("#treemap-tooltip").classed("hidden", false);
+
+                d3.select("#positiveValue")
+                    .text(function() {
+                        if(vis.selected_opt === "positive") {
+                            return Math.round(d.data.value) + " words";
+                        } else {
+                            let text = "";
+                            vis.positiveData.forEach(element => {
+                                if(d.data.name === element.name) {
+                                    text = Math.round(element.value) + " words"
+                                }
+                            })
+                            return text;
+                        }
+                    })
+                
+                d3.select("#negativeValue")
+                    .text(function() {
+                        if(vis.selected_opt === "negative") {
+                            return Math.round(d.data.value) + " words";
+                        } else {
+                            let text = "";
+                            vis.negativeData.forEach(element => {
+                                if(d.data.name === element.name) {
+                                    text = Math.round(element.value) + " words"
+                                }
+                            })
+                            return text;
+                        }
+                    })
+            })
+            .on("mousemove", function(event, d) {
+                d3.select("#treemap-tooltip")
+                    .style('left', `${event.pageX - vis.margin.left}px`)
+                    .style('top', `${event.pageY - vis.margin.top}px`)
             })
             .on("mouseout", function(event, d) {
                 d3.select(this)
                     .transition("stroke")
                     .duration(200)
                     .attr("stroke-width", "0px")
+
+                d3.select("#treemap-tooltip").classed("hidden", true);
             })
             .transition()
             .duration(1000)

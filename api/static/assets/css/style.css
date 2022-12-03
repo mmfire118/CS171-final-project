@@ -158,7 +158,7 @@ body.swal2-shown.swal2-height-auto {
 	height: 1000px;
 }
 
-#words-tooltip {
+#words-tooltip, #treemap-tooltip {
 	position: absolute;
 	background: #ecf0f1;
 	border: 2px solid #bdc3c7;
@@ -169,11 +169,11 @@ body.swal2-shown.swal2-height-auto {
 	z-index: 10;
 }
 
-#words-tooltip > p {
+#words-tooltip > p, #treemap-tooltip > p {
 	color: #95a5a6;
 }
 
-#words-tooltip > h4 {
+#words-tooltip > h4, #treemap-tooltip > h4 {
 	color: #34495e;
 	font-weight: 800;
 }

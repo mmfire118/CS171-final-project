@@ -190,7 +190,7 @@ class BubbleVis {
                             .text(d3.format(",")(d.value) + " times")
 
                         d3.select("#appeared")
-                        .text('"' + d.word + '"' + " appeared")
+                            .text('"' + d.word + '"' + " appeared")
                         
                         d3.select("#sub-value")
                             .text("in " + vis.selected_opt + " reviews")
