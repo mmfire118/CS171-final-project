@@ -40,6 +40,10 @@ class TreeMap {
         vis.positiveData.push({
             name: "Origin"
         })
+        vis.totalData = [];
+        vis.totalData.push({
+            name: "Origin"
+        })
 
         vis.dataCopy = vis.data
 
@@ -61,7 +65,9 @@ class TreeMap {
 
         vis.dataCopy = d3.group(vis.dataCopy, d => d.Category)
 
-        
+
+        var totalPositiveAverage = 0;
+        var totalNegativeAverage = 0;
         vis.dataCopy.forEach(element => {
             let positiveWordSum = 0;
             let numPositive = 0;
@@ -80,7 +86,9 @@ class TreeMap {
             })
 
             let positiveAverage = positiveWordSum / numPositive;
+            totalPositiveAverage += positiveAverage;
             let negativeAverage = negativeWordSum / numNegative;
+            totalNegativeAverage += negativeAverage;
 
             vis.negativeData.push({
                 name: element[0].Category,
@@ -97,10 +105,28 @@ class TreeMap {
             });
         });
 
+        totalPositiveAverage = totalPositiveAverage / (vis.positiveData.length - 1)
+        totalNegativeAverage = totalNegativeAverage / (vis.negativeData.length - 1)
+
+        vis.totalData.push({
+            name: "Positive Reviews",
+            parent: 'Origin',
+            value: totalPositiveAverage,
+            category: "Positive"
+        });
+        vis.totalData.push({
+            name: "Negative Reviews",
+            parent: 'Origin',
+            value: totalNegativeAverage,
+            category: "Negative"
+        });
+
         if(vis.selected_opt === "negative") {
             vis.filteredData = vis.negativeData;
-        } else {
+        } else if(vis.selected_opt === "positive") {
             vis.filteredData = vis.positiveData;
+        } else {
+            vis.filteredData = vis.totalData;
         }
 
         console.log(vis.filteredData)
@@ -111,6 +137,11 @@ class TreeMap {
     updateVis() {
         let vis = this;
 
+        if(vis.selected_opt !== "total") {
+            setTimeout(function() {d3.select(".Positive").remove()}, 600);
+            setTimeout(function() {d3.select(".Negative").remove()}, 600);
+        }
+        
         var color = "#2ecc71"
         if (vis.selected_opt == "negative") {
             color = "#e74c3c";
@@ -151,7 +182,7 @@ class TreeMap {
         node.exit()
             .attr("fill-opacity", 1)
             .attr("stroke-opacity", 1)
-            .transition()
+            .transition("stroke")
             .duration(500)
             .attr("fill-opacity", 0)
             .attr("stroke-opacity", 0)
@@ -262,7 +293,7 @@ class TreeMap {
             .transition()
             .duration(1000)
             .text(function(d){ 
-                if(vis.filteredData.length <= 3) {
+                if(vis.filteredData.length <= 3 && vis.selected_opt !== "total") {
                     return d.data.name + " " + d.data.category
                 } else {
                     return d.data.name
@@ -385,8 +416,21 @@ class TreeMap {
             console.log("HELLO")
             if(vis.selected_opt === "positive") {
                 vis.filteredData = vis.positiveData
-            } else {
+            } else if(vis.selected_opt === "negative") {
                 vis.filteredData = vis.negativeData
+            } else {
+                console.log(d)
+                if(d.data.category === "Positive") {
+                    d3.select('#treemap-select').property("value", "positive");
+                    vis.wrangleData();
+                    return
+                    // vis.filteredData = vis.positiveData
+                } else {
+                    // vis.filteredData = vis.negativeData
+                    d3.select('#treemap-select').property("value", "negative");
+                    vis.wrangleData();
+                    return
+                }
             }
             vis.updateVis();
         }
