@@ -38,6 +38,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app-assets/css/pages/page-faq.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app-assets/css/pages/page-knowledge-base.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app-assets/css/plugins/extensions/ext-component-sweet-alerts.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/fullpage.min.css') }}" />
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->
@@ -85,8 +86,8 @@
                         </svg>
                         <h2 class="brand-text text-primary ms-1">CS171 Final Project</h2>
                     </a>
-                    <div class="misc-inner p-2 p-sm-3 mt-5" style="max-width: none;">
-                        <div class="col">
+                    <div id="fullpage" class="misc-inner p-2 p-sm-3 mt-5" style="max-width: none;">
+                        <div class="col section">
                             <div class="p-2 p-sm-3">
                                 <div class="w-100 text-center">
                                     <div class="row">
@@ -98,7 +99,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="top-row" class="row">
+                        <div id="top-row" class="section row">
                             <div class="col-12 text-center mt-2">
                                 <h3 class="mt-50">What are the most common words used in negative or positive reviews?</h3>
                                 <p class="mb-1">This is a compilation of the most common words across our set of Amazon reviews.</p>
@@ -116,6 +117,8 @@
                                 <button class="btn-sm" onclick="displayWordFreq()">Add Word Bubble</button>
                                 <button class="btn-sm btn-danger" onclick="clearExtraBubbles()">Clear</button>
                             </div>
+                        </div>
+                        <div class="section row">
                             <div class="col-12 text-center mt-2">
                                 <h3 class="mt-50">Do reviews with higher numbers of words tend to be more positive or negative?</h3>
                                 <p class="mb-1">This is a visualization that shows the average length (in words) of reviews for a given category. The categories with the most reviews don’t necessarily have the longest reviews. Generally, one can assume that longer reviews mean more polarizing items, as a person who writes an in-depth review concerning some object likely has strong feelings about it, whether positive or negative.</p>
@@ -124,7 +127,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="mid-row" class="row">
+                        <div id="mid-row" class="section row">
                             <div class="col-12 text-center mt-2">
                                 <h3 class="mt-50">How the number of item reviews by category changes over time?</h3>
                                 <p class="mb-1">This is a visualization that shows the average rating for objects in a given category over time. Generally, these average ratings fluctuate around values close to 4.5, and stay relatively constant over time, especially as the number of ratings on the site increases. This suggests that the customer base as a whole is generally satisfied with the items they procure via Amazon.</p>
@@ -135,6 +138,8 @@
                                     
                                 </div>
                             </div>
+                        </div>
+                        <div class="section row">
                             <div class="col-12 text-center mt-2">
                                 <h3 class="mt-50">Phases of interest: distribution of the average item rating by category</h3>
                                 <p class="mb-1">This is a visualization that shows the distribution of the number of reviews in a given category over time. Note that, despite the category, the number of reviews tends to peak around 2016 and then decrease.</p>
@@ -147,7 +152,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="bot-row" class="row">
+                        <div id="bot-row" class="section row">
                             <div class="col-12 text-center mt-2">
                                 <h3 class="mt-50">The distribution of "helpful" reviews</h3>
                                 <p class="mb-1">This is a visualization that shows the summed number of helpful ratings for each average rating.</p>
@@ -205,6 +210,7 @@
 
     <!-- BEGIN: Page JS-->
     <script src="{{ url_for('static', filename='app-assets/js/scripts/extensions/ext-component-toastr.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/fullpage.extensions.min.js') }}"></script>
     <!-- END: Page JS-->
 
     <script nonce="{{ csp_nonce() }}">
@@ -233,6 +239,14 @@
                 });
             }
         })
+
+        $(document).ready(function() {
+            $('#fullpage').fullpage({
+                licenseKey: 'gplv3-license',
+                parallax: true,
+                navigation: true,
+            });
+        });
 
         {% if get_flashed_messages() %}
             toastr['info']('{{ get_flashed_messages() | join(" ") }}', 'Alert!', {
