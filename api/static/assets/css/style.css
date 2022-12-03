@@ -201,3 +201,26 @@ input:focus, input:focus-visible {
 /* .dark-layout body, body.dark-layout {
 	background: #ecf0f1;
 } */
+
+#page-wrapper {
+	overflow: scroll;
+    height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
+    scroll-snap-points-y: repeat(100vh);
+    scroll-snap-type: y mandatory;
+}
+
+#page-wrapper > div {
+	/* scroll-snap-align: center; */
+	display: flex;
+	/* height: 100vh;
+    width: 100vw; */
+    overflow-x: hidden;
+    scroll-snap-align: start;
+    position: relative;
+}
+
+.word-search {
+	margin-bottom: 25px;
+}
