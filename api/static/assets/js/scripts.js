@@ -86,6 +86,9 @@ function solutionCatChange() {
 }
 
 function displayWordFreq() {
-    let selectedWord = document.getElementById('word-freq').value;
-    myBubbleGraph.updateWordFreqText(selectedWord);
+    let selectedWord = $('#word-freq').val();
+    if (selectedWord != "") {
+        myBubbleGraph.updateWordFreqText(selectedWord);
+        $('#word-freq').val("")
+    }
 }
