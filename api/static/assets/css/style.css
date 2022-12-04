@@ -228,7 +228,7 @@ input:focus, input:focus-visible {
 #tooltip-value {
 	fill: #CDD0D6;
 	font-weight: bold;
-	font-size: 130%;
+	font-size: 150%;
 }
 
 #tooltip-date {

@@ -98,13 +98,13 @@ class LineVis {
         let tooltipValText = tooltipGroup.append("text")
             .attr("id", "tooltip-value")
             .attr("x", 10)
-            .attr("y", 10)
+            .attr("y", 15)
             .text("Hi!");
 
         let tooltipDateText = tooltipGroup.append("text")
             .attr("id", "tooltip-date")
             .attr("x", 10)
-            .attr("y", 40)
+            .attr("y", 45)
             .text("Hi! 2");
 
         let bisectDate = d3.bisector(d=>d.timestamp).left;
