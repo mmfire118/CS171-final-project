@@ -98,10 +98,11 @@ function displayWordFreq() {
 // React to 'brushed' event and update all bar charts
 function brushed() {
     let selectionRange = d3.brushSelection(d3.select(".brush").node());
+    if (selectionRange != null) {
+        let selectionDomain = selectionRange.map(FilterTreeMap.x.invert);
 
-    let selectionDomain = selectionRange.map(FilterTreeMap.x.invert);
-
-    myTreeMap.selectionChanged(selectionDomain);
+        myTreeMap.selectionChanged(selectionDomain);
+    }
 }
 
 function resetBrushing() {
