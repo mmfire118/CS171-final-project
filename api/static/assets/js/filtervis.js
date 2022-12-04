@@ -68,7 +68,7 @@ class FilterVis {
 
         let brush = d3.brushX()
             .extent([[0, 0], [vis.width, vis.height]])
-            .on("brush", brushed);
+            .on("end", brushed);
 
         vis.svg.append("g")
             .attr("class", "x brush")
