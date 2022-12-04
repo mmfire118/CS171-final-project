@@ -19,6 +19,8 @@ class HelpfulChart {
             .attr("height", vis.height)
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
 
+        vis.starImages = [window.onestar_file_path, window.twostar_file_path, threestar_file_path, fourstar_file_path, fivestar_file_path]
+
         vis.wrangleData();
     }
 
@@ -77,7 +79,7 @@ class HelpfulChart {
         images.enter()
             .append("image")
             .merge(images)
-            .attr("href", d=> "/static/assets/js/images/" + d.rating + "star.svg")
+            .attr("href", d=> vis.starImages[d.rating - 1])
             .transition()
             .duration(800)
             .attr("x", d=> vis.width / 2 - (500 * radiusScale(d.count) / 2))

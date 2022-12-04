@@ -207,6 +207,12 @@
         window.helpful_data_path = "{{ url_for('static', filename='data/helpful.json') }}"
         window.stop_words_file_path = "{{ url_for('static', filename='data/stopWords.json') }}"
 
+        window.onestar_file_path = "{{ url_for('static', filename='/assets/images/1star.svg') }}"
+        window.twostar_file_path = "{{ url_for('static', filename='/assets/images/2star.svg') }}"
+        window.threestar_file_path = "{{ url_for('static', filename='/assets/images/3star.svg') }}"
+        window.fourstar_file_path = "{{ url_for('static', filename='/assets/images/4star.svg') }}"
+        window.fivestar_file_path = "{{ url_for('static', filename='/assets/images/4star.svg') }}"
+
         $(window).on('load', function() {
             $.blockUI({
                 message: '<div class="d-flex justify-content-center align-items-center"><p class="me-50 mb-0">Please wait...</p> <div class="spinner-grow spinner-grow-sm text-white" role="status"></div> </div>',
