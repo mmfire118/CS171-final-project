@@ -122,6 +122,10 @@ class TreeMap {
             category: "Negative"
         });
 
+        vis.negativeData = vis.negativeData.filter(elem => elem.name == "Origin" || !isNaN(elem.value))
+        vis.positiveData = vis.positiveData.filter(elem => elem.name == "Origin" || !isNaN(elem.value))
+        vis.totalData = vis.totalData.filter(elem => elem.name == "Origin" || !isNaN(elem.value))
+
         if(vis.selected_opt === "negative") {
             vis.filteredData = vis.negativeData;
         } else if(vis.selected_opt === "positive") {
