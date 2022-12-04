@@ -97,11 +97,20 @@ function displayWordFreq() {
 
 // React to 'brushed' event and update all bar charts
 function brushed() {
-
-    // * TO-DO *
     let selectionRange = d3.brushSelection(d3.select(".brush").node());
 
     let selectionDomain = selectionRange.map(FilterTreeMap.x.invert);
+
+    myTreeMap.selectionChanged(selectionDomain);
+}
+
+function resetBrushing() {
+    let parseDate = d3.timeParse("%Y-%m-%d");
+
+    let selectionDomain = [parseDate("1970-01-01"), parseDate("2020-12-31")];
+
+    d3.select("g.brush").call(d3.brush().move, [[0, 0], [0, 0]]);
+
 
     myTreeMap.selectionChanged(selectionDomain);
 }
