@@ -38,7 +38,6 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app-assets/css/pages/page-faq.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app-assets/css/pages/page-knowledge-base.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app-assets/css/plugins/extensions/ext-component-sweet-alerts.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/fullpage.min.css') }}" />
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->
@@ -173,6 +172,15 @@
                     </div>
                 </div>
             </div>
+            <div class="">
+                <div class="col-12 text-center">
+                    <div class="p-3">
+                        <h3 class="mt-50">Conclusion</h3>
+                        <p class="mb-1"></p>
+                        <p class="mb-1"></p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <!-- END: Content-->
@@ -197,7 +205,6 @@
 
     <!-- BEGIN: Page JS-->
     <script src="{{ url_for('static', filename='app-assets/js/scripts/extensions/ext-component-toastr.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/fullpage.extensions.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/anime.min.js') }}"></script>
     <!-- END: Page JS-->
 
@@ -233,15 +240,6 @@
                 });
             }
         })
-
-        // $(document).ready(function() {
-        //     $('#fullpage').fullpage({
-        //         licenseKey: 'gplv3-license',
-        //         parallax: true,
-        //         navigation: true,
-        //         scrollOverflow: false,
-        //     });
-        // });
 
         window.human = false;
 
@@ -378,20 +376,6 @@
         autoClick();
         setCanvasSize();
         window.addEventListener('resize', setCanvasSize, false);
-
-        // stop minor scrolling and allow fullpage
-        // document.querySelector('#first').addEventListener('wheel', preventScroll, {passive: false});
-
-        // function preventScroll(e){
-        //     e.preventDefault();
-        //     e.stopPropagation();
-
-        //     if (e.deltaY > 0) {
-        //         fullpage_api.moveTo(2);
-        //     }
-            
-        //     return false;
-        // }
 
         // submit bubbles on enter
         $("#word-freq").keyup(function(event) {
