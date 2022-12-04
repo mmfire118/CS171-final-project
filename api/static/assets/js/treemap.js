@@ -187,12 +187,12 @@ class TreeMap {
             .data(vis.adjustedData.leaves(), d=> d.data.name)
 
         node.exit()
-            .attr("fill-opacity", 1)
-            .attr("stroke-opacity", 1)
-            .transition("stroke")
-            .duration(500)
-            .attr("fill-opacity", 0)
-            .attr("stroke-opacity", 0)
+            // .attr("fill-opacity", 1)
+            // .attr("stroke-opacity", 1)
+            // .transition("stroke")
+            // .duration(500)
+            // .attr("fill-opacity", 0)
+            // .attr("stroke-opacity", 0)
             .remove();
 
         node.enter()
@@ -303,12 +303,12 @@ class TreeMap {
             .data(vis.adjustedData.leaves(), d=> d.data.name)
 
         textWrapper.exit()
-            .attr("fill-opacity", 1)
-            .attr("stroke-opacity", 1)
-            .transition()
-            .duration(500)
-            .attr("fill-opacity", 0)
-            .attr("stroke-opacity", 0)
+            // .attr("fill-opacity", 1)
+            // .attr("stroke-opacity", 1)
+            // .transition()
+            // .duration(500)
+            // .attr("fill-opacity", 0)
+            // .attr("stroke-opacity", 0)
             .remove();
 
         var textWrapperEnter = textWrapper.enter()
