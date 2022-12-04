@@ -96,13 +96,11 @@ class LineVis {
             .attr("id", "tooltip-value")
             .attr("x", 10)
             .attr("y", 15)
-            .text("0");
 
         let tooltipDateText = tooltipGroup.append("text")
             .attr("id", "tooltip-date")
             .attr("x", 10)
             .attr("y", 45)
-            .text("1970-01-01");
 
         let bisectDate = d3.bisector(d=>d.timestamp).left;
 
@@ -303,7 +301,7 @@ class LineVis {
         let lineInside = d3.line()
             .x(d => vis.x(d.timestamp))
             .y(d => vis.y(d.value))
-            .curve(d3.curveNatural);
+            .curve(d3.curveMonotoneX);
 
         let lines = vis.svg.selectAll(".line")
             .data(vis.displayData, d => d.category);
