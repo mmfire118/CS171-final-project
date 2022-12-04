@@ -146,6 +146,9 @@ class TreeMap {
     updateVis() {
         let vis = this;
 
+        var categories = d3.rollup(vis.filteredData, v=> v.length, d=> d.category)
+        vis.isFocusView = Array.from(categories.keys()).length > 2
+
         if(vis.selected_opt !== "total") {
             setTimeout(function() {d3.select(".Positive").remove()}, 600);
             setTimeout(function() {d3.select(".Negative").remove()}, 600);
@@ -200,7 +203,7 @@ class TreeMap {
             .merge(node)
             .attr("class", d=> d.data.name.split(' ')[0] + d.data.category)
             .attr("stroke", d=> {
-                if(vis.filteredData.length > 3) {
+                if(!vis.isFocusView) {
                     if(((vis.max - vis.min) / 2) + vis.min <= d.value) {
                         return "white";
                     } else {
@@ -221,7 +224,7 @@ class TreeMap {
                     .duration(200)
                     .attr("stroke-width", "5px")
                 
-                if(vis.filteredData.length > 3) {
+                if(!vis.isFocusView) {
                     d3.select("#treemap-tooltip")
                         .style('left', `${event.pageX - vis.margin.left}px`)
                         .style('top', `${event.pageY - vis.margin.top}px`)
@@ -261,7 +264,7 @@ class TreeMap {
                 }
             })
             .on("mousemove", function(event, d) {
-                if(vis.filteredData.length > 3) {
+                if(!vis.isFocusView) {
                     d3.select("#treemap-tooltip")
                         .style('left', `${event.pageX - vis.margin.left}px`)
                         .style('top', `${event.pageY - vis.margin.top}px`)
@@ -273,7 +276,7 @@ class TreeMap {
                     .duration(200)
                     .attr("stroke-width", "0px")
 
-                if(vis.filteredData.length > 3) {
+                if(!vis.isFocusView) {
                     d3.select("#treemap-tooltip").classed("hidden", true);
                 }
             })
@@ -284,7 +287,7 @@ class TreeMap {
             .attr('width', function (d) { return d.x1 - d.x0; })
             .attr('height', function (d) { return d.y1 - d.y0; })
             .style("fill", d=> {
-                if(vis.filteredData.length > 3) {
+                if(!vis.isFocusView) {
                     if(d.data.category === "Positive") {
                         return vis.positiveColor(d.data.value)
                     } else {
@@ -365,7 +368,7 @@ class TreeMap {
             })
             .attr("font-weight", "600")
             .attr("fill", d=> {
-                if(vis.filteredData.length > 3) {
+                if(!vis.isFocusView) {
                     if(((vis.max - vis.min) / 2) + vis.min <= d.value) {
                         return "white";
                     } else {
@@ -403,7 +406,7 @@ class TreeMap {
                 }
             })
             .attr("fill", d=> {
-                if(vis.filteredData.length > 3) {
+                if(!vis.isFocusView) {
                     if(((vis.max - vis.min) / 2) + vis.min <= d.value) {
                         return "white";
                     } else {
@@ -441,7 +444,7 @@ class TreeMap {
     clickCategory(event, d) {
         let vis = this;
 
-        if(vis.filteredData.length > 3) {
+        if(!vis.isFocusView) {
             let category = d.data.name
             let newData = [];
             vis.filteredData.forEach(element => {
