@@ -166,7 +166,7 @@ class TreeMap {
             .range(["white", "#e74c3c"])
 
         vis.fontScale = d3.scaleLinear().domain([vis.min, vis.max])
-            .range([10, Math.min(vis.width / 50, 30)])
+            .range([Math.max(vis.width / 200, 8), Math.min(vis.width / 65, 30)])
         
 
         var root = d3.stratify()
