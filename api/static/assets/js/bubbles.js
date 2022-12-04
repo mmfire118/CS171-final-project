@@ -128,7 +128,7 @@ class BubbleVis {
                 })
             }
         })
-
+        
         vis.updateVis();
     }
 

@@ -23,6 +23,9 @@ class TreeMap {
             .attr("height", vis.height)
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
 
+        vis.minimumDate = vis.parseDate("1970-01-01")
+        vis.maximumDate = vis.parseDate("2020-12-31")
+
         vis.wrangleData();
     }
 
@@ -47,7 +50,7 @@ class TreeMap {
         vis.dataCopy = vis.data
 
         vis.dataCopy.forEach(function(part, index, theArray) {
-            vis.dataCopy[index].Timestamp = vis.parseDate(theArray[index].Timestamp)
+            vis.dataCopy[index].Timestamp = theArray[index].Timestamp;
             vis.dataCopy[index].Num_Words = +vis.dataCopy[index].Num_Words;
             vis.dataCopy[index].Rating = +vis.dataCopy[index].Rating;
             if(vis.dataCopy[index].Rating > 3) {
@@ -59,8 +62,7 @@ class TreeMap {
             }
         })
 
-        vis.minimumDate = d3.min(vis.dataCopy, function(d){ return d.Timestamp })
-        vis.maximumDate = d3.max(vis.dataCopy, function(d){ return d.Timestamp })
+        vis.dataCopy = vis.dataCopy.filter(d => d.Timestamp <= vis.maximumDate && d.Timestamp >= vis.minimumDate)
 
         vis.dataCopy = d3.group(vis.dataCopy, d => d.Category)
 
@@ -480,5 +482,16 @@ class TreeMap {
                 }
             }
         }
+    }
+
+    selectionChanged(selectionDomain) {
+        let vis = this;
+
+        // Filter data accordingly without changing the original data
+        vis.minimumDate = selectionDomain[0];
+        vis.maximumDate = selectionDomain[1];
+
+        // Update the visualization
+        vis.wrangleData();
     }
 }

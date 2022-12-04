@@ -40,7 +40,7 @@ class LineVis {
             .attr('class', 'axis-text')
             .append('text')
             .text(vis.yAxisText)
-            .attr('transform', `translate(-35,${vis.height/2})rotate(-90)`)
+            .attr('transform', `translate(-50,${vis.height/2})rotate(-90)`)
             .attr('text-anchor', 'middle');
 
         /* tooltip
@@ -69,9 +69,6 @@ class LineVis {
             .attr("class", "x-axis axis")
             .attr("transform", "translate(0," + vis.height + ")");
 
-        vis.minimumDate = d3.min(vis.data, function(d){ return d.Timestamp });
-        vis.maximumDate = d3.max(vis.data, function(d){ return d.Timestamp });
-
         if (vis.rollupFunction == "avg-rating"){
             vis.wrangleAvgRatingData();
         }
@@ -99,13 +96,13 @@ class LineVis {
             .attr("id", "tooltip-value")
             .attr("x", 10)
             .attr("y", 15)
-            .text("Hi!");
+            .text("0");
 
         let tooltipDateText = tooltipGroup.append("text")
             .attr("id", "tooltip-date")
             .attr("x", 10)
             .attr("y", 45)
-            .text("Hi! 2");
+            .text("1970-01-01");
 
         let bisectDate = d3.bisector(d=>d.timestamp).left;
 
@@ -281,6 +278,9 @@ class LineVis {
 
     updateVis(){
         let vis = this;
+
+        vis.minimumDate = d3.min(vis.displayData[0].dates, function(d){ return d.timestamp });
+        vis.maximumDate = d3.max(vis.displayData[0].dates, function(d){ return d.timestamp });
 
         vis.x.domain([vis.minimumDate, vis.maximumDate]);
         vis.y.domain([0, d3.max(d3.map(vis.displayData, d => d3.max(d.dates, x => x.value)))]);

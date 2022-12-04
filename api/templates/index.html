@@ -102,6 +102,9 @@
                             <option value="positive">Positive</option>
                             <option value="total">Total</option>
                         </select>
+                        <div id="filter-treemap">
+
+                        </div>
                         <div id="rising-insight">
                             <div id="treemap-tooltip" class="hidden"><p>Positive Reviews</p><h4 id="positiveValue"></h4><p>Negative Reviews</p><h4 id="negativeValue"></h4></div>
                         </div>
@@ -403,6 +406,7 @@
     </script>
 
     <!-- BEGIN: D3 -->
+    <script src="{{ url_for('static', filename='assets/js/filtervis.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/line.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/treemap.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/bubbles.js') }}"></script>

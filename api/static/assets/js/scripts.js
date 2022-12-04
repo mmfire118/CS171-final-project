@@ -1,5 +1,5 @@
 // init global variables & switches
-let myLineVis, myLineVis2;
+let myLineVis, myLineVis2, FilterTreeMap;
 
 // load data using promises
 let promises = [
@@ -49,10 +49,10 @@ function initMainPage(dataArray) {
       "Average Review Rating (by month)",
       "avg-rating", dataArray[0])
 
+  FilterTreeMap = new FilterVis('filter-treemap', dataArray[0])
+
   // init treemap
   myTreeMap = new TreeMap('rising-insight', dataArray[0])
-
-  console.log(dataArray[1])
 
   //init Bubbles
   myBubbleGraph = new BubbleVis('hook-div', dataArray[1], dataArray[3][0].stopwords, "word-freq-result")
@@ -67,6 +67,7 @@ function filterWords() {
 
 function filterTreeMap() {
     myTreeMap.wrangleData();
+    FilterTreeMap.wrangleData();
 }
 
 function clearExtraBubbles() {
@@ -93,3 +94,15 @@ function displayWordFreq() {
         $('#word-freq').val("")
     }
 }
+
+// React to 'brushed' event and update all bar charts
+function brushed() {
+
+    // * TO-DO *
+    let selectionRange = d3.brushSelection(d3.select(".brush").node());
+
+    let selectionDomain = selectionRange.map(FilterTreeMap.x.invert);
+
+    myTreeMap.selectionChanged(selectionDomain);
+}
+

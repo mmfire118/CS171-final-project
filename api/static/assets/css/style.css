@@ -129,6 +129,10 @@ body.swal2-shown.swal2-height-auto {
 	height: 700px;
 }
 
+#filter-treemap {
+	height: 150px;
+}
+
 #rising-insight {
 	height: 700px;
 }
@@ -147,11 +151,11 @@ body.swal2-shown.swal2-height-auto {
 }
 
 #main-message {
-	height: 700px;
+	height: 500px;
 }
 
 #solution-div {
-	height: 700px;
+	height: 500px;
 }
 
 #helpful-div {
