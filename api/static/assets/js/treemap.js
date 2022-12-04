@@ -86,11 +86,17 @@ class TreeMap {
                 }
             })
 
-            let positiveAverage = positiveWordSum / numPositive;
-            totalPositiveAverage += positiveAverage;
-            let negativeAverage = negativeWordSum / numNegative;
-            totalNegativeAverage += negativeAverage;
-
+            let positiveAverage = 0;
+            if (numPositive != 0) {
+                positiveAverage = positiveWordSum / numPositive;
+                totalPositiveAverage += positiveAverage;
+            }
+            let negativeAverage = 0;
+            if (numNegative != 0) {
+                negativeAverage = negativeWordSum / numNegative;
+                totalNegativeAverage += negativeAverage;
+            }
+            
             vis.negativeData.push({
                 name: element[0].Category,
                 parent: 'Origin',
