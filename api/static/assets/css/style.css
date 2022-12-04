@@ -224,3 +224,15 @@ input:focus, input:focus-visible {
 .word-search {
 	margin-bottom: 25px;
 }
+
+#tooltip-value {
+	fill: #CDD0D6;
+	font-weight: bold;
+	font-size: 130%;
+}
+
+#tooltip-date {
+	fill: #9094A0;
+	font-weight: bold;
+	font-size: 110%;
+}

@@ -85,28 +85,26 @@ class LineVis {
         // Create and manage tooltip
         let tooltipGroup = vis.svg.append("g")
             .style("display", "none")
-            .attr("class", "custom-tooltip");
+            .attr("class", "line-tooltip");
 
         tooltipGroup.append("line")
             .attr("x1", "0")
             .attr("y1", 0)
             .attr("x2", "0")
             .attr("y2", vis.height)
-            .attr("stroke", "white")
+            .attr("stroke", "#656a77")
             .attr("stroke-width", 2);
 
-        let tooltipPopText = tooltipGroup.append("text")
-            .attr("id", "tooltip-pop")
-            .attr("fill", "white")
+        let tooltipValText = tooltipGroup.append("text")
+            .attr("id", "tooltip-value")
             .attr("x", 10)
-            .attr("y", 50)
+            .attr("y", 10)
             .text("Hi!");
 
         let tooltipDateText = tooltipGroup.append("text")
             .attr("id", "tooltip-date")
-            .attr("fill", "white")
             .attr("x", 10)
-            .attr("y", 20)
+            .attr("y", 40)
             .text("Hi! 2");
 
         let bisectDate = d3.bisector(d=>d.timestamp).left;
@@ -125,8 +123,29 @@ class LineVis {
                 let closestDateIndex = bisectDate(vis.displayData[0].dates, mousePosDate);
 
                 tooltipGroup.attr("transform", "translate("+mouseX+", 0)");
-                tooltipPopText.text(vis.displayData[0].dates[closestDateIndex].value);
-                tooltipDateText.text(d3.timeFormat("%Y-%m-%d")(mousePosDate)/*data[closestDateIndex]["date"])*/);
+                if (vis.rollupFunction == "avg-rating"){
+                    tooltipValText.text(vis.displayData[0].dates[closestDateIndex].value.toFixed(3));
+                }
+                else if (vis.rollupFunction == "sum-reviews"){
+                    tooltipValText.text(vis.displayData[0].dates[closestDateIndex].value.toLocaleString("en-US"));
+                }
+                else {
+                    console.log("ERROR: Invalid rollupFunction value");
+                }
+                tooltipDateText.text(d3.timeFormat("%Y-%m-%d")(mousePosDate));
+
+                if (mouseX < 100) {
+                    tooltipDateText.attr("text-anchor", "start")
+                    tooltipDateText.attr("x", "10")
+                    tooltipValText.attr("text-anchor", "start")
+                    tooltipValText.attr("x", "10")
+                }
+                else if (mouseX > vis.width - 100) {
+                    tooltipDateText.attr("text-anchor", "end")
+                    tooltipDateText.attr("x", "-10")
+                    tooltipValText.attr("text-anchor", "end")
+                    tooltipValText.attr("x", "-10")
+                }
             });
     }
 
