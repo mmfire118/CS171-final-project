@@ -13,6 +13,7 @@ class FilterVis {
     initVis() {
         let vis = this;
 
+        // set up margin and svg dimensions
         vis.margin = {top: 20, right: 20, bottom: 40, left: 60};
         vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
@@ -100,6 +101,7 @@ class FilterVis {
 
         let clonedArray = vis.data.map(a => {return {...a}})
 
+        // filter for negative/positive/all reviews based on dropdown
         let selected_opt = d3.select('#treemap-select').property("value");
 
         if (selected_opt == "negative") {
@@ -110,6 +112,7 @@ class FilterVis {
 
         vis.dataCopy = d3.rollup(clonedArray, v => d3.mean(v, d => d.Num_Words), d => d.Timestamp)
 
+        // aggregates data by month
         let monthly_data = d3.rollups(vis.dataCopy, v => d3.mean(v, d => d[1]), function (d) {
             let ts = vis.formatDate(d[0]).toString();
             return ts.split('-').slice(0, 2).join('-');
