@@ -172,13 +172,12 @@
                     </div>
                 </div>
             </div>
-            <div class="">
+            <div class="h-100">
                 <div class="col-12 text-center">
                     <div class="p-3">
                         <h1 class="mt-50">Conclusion</h1>
                         <p class="mb-1">The prevalence of 5 star reviews, along with our prior data, reveals that the average modern-day Amazon user is generally satisfied with their purchases; even though negative reviews tend to be slightly longer, people find positive reviews much more helpful. This supports the hypothesis that people becoming accustomed to online retailers has caused a dramatic shift in how they leave reviews. Not only has the number of reviews people left over time decreased, but the reviews people find most helpful tend to be the shorter ones.</p>
-                        <!-- THIS IS A PLACEHOLD... PUT SOMETHING HERE -->
-                        <canvas height="1400" width="2"></canvas>
+                        <button class="run-button" id='runaway-btn'>Support Amazon</button>
                     </div>
                 </div>
             </div>
@@ -222,6 +221,7 @@
         window.fivestar_file_path = "{{ url_for('static', filename='/assets/images/4star.svg') }}"
 
         $(window).on('load', function() {
+            // Start BlockUI Until Page Loaded
             $.blockUI({
                 message: '<div class="d-flex justify-content-center align-items-center"><p class="me-50 mb-0">Please wait...</p> <div class="spinner-grow spinner-grow-sm text-white" role="status"></div> </div>',
                 css: {
@@ -234,6 +234,7 @@
                 },
             });
 
+            // Populate Feather Icons
             if (feather) {
                 feather.replace({
                     width: 14,
@@ -242,6 +243,7 @@
             }
         })
 
+        // Fireworks
         window.human = false;
 
         var canvasEl = document.querySelector('.fireworks');
@@ -378,13 +380,59 @@
         setCanvasSize();
         window.addEventListener('resize', setCanvasSize, false);
 
-        // submit bubbles on enter
+        // Animated Runaway Button
+        const button = document.getElementById("runaway-btn");
+
+        var tryCounter = 0
+
+        const animateMove = (element, prop, pixels) =>
+        anime({
+            targets: element,
+            [prop]: `${pixels}px`,
+            easing: "easeOutCirc"
+        });
+
+        ["mouseover", "click"].forEach(function (el) {
+            button.addEventListener(el, function (event) {
+                const top = getRandomNumber(window.innerHeight - this.offsetHeight);
+                const left = getRandomNumber(window.innerWidth - this.offsetWidth);
+                const links = ["https://thrivemarket.com/", "https://www.grove.co/", "https://www.madetrade.com/", "https://credobeauty.com/", "https://www.uncommongoods.com/", "https://bookshop.org/", "https://packagefreeshop.com/", "https://www.thelittlemarket.com/", "https://blkgrn.com/"]
+
+                animateMove(this, "left", left).play();
+                animateMove(this, "top", top).play();
+
+                if (tryCounter % 5 == 0) {
+                    Swal.fire({
+                        title: 'Support Small Businesses!',
+                        text: 'Amazon is too big. Find other retailers.',
+                        icon: 'error',
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        },
+                        buttonsStyling: false,
+                        showClass: {
+                            popup: 'animate__animated animate__shakeX'
+                        }
+                    }).then((result) => {
+                        window.open(links[anime.random(0, links.length - 1)], '_blank')
+                    });
+                }
+                tryCounter += 1
+            });
+        });
+
+        const getRandomNumber = (num) => {
+        return Math.floor(Math.random() * (num + 1));
+        };
+
+        // Submit Bubbles on Enter
         $("#word-freq").keyup(function(event) {
             if (event.keyCode === 13) {
                 displayWordFreq()
             }
         });
-
+        
+        // Setup Flask Message Flashing
         {% if get_flashed_messages() %}
             toastr['info']('{{ get_flashed_messages() | join(" ") }}', 'Alert!', {
             closeButton: true,

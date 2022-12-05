@@ -244,3 +244,17 @@ input:focus, input:focus-visible {
 #rising-insight {
 	margin-bottom: 25px;
 }
+
+.run-button {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: 4rem;
+	width: 10rem;
+	font-size: 1.25rem;
+	border-radius: 5px;
+	border: none;
+	box-shadow: 1px 1px 5px black;
+	background-color: white;
+  }
