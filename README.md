@@ -5,5 +5,9 @@
 - Install requirements with `pip install -r requirements.txt`
 - Run with `gunicorn --workers=1 api.application:app --timeout 180`.
 
+## Website Link
+https://cs171.onrender.com/
+
 ## Link to Original Data
 - The size of our original dataset was too big to upload. You can access it at the following link: https://nijianmo.github.io/amazon/index.html.
+- The file explaining the fields of the data files we included is "data_fields.md".
