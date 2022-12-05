@@ -414,7 +414,7 @@
                             popup: 'animate__animated animate__shakeX'
                         }
                     }).then((result) => {
-                        window.open(links[anime.random(0, links.length - 1)], '_blank')
+                        window.open(links[(Math.floor(Math.random() * links.length))], '_blank')
                     });
                 }
                 tryCounter += 1
