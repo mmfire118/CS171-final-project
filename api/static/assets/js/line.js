@@ -16,6 +16,7 @@ class LineVis {
     initVis(){
         let vis = this;
 
+        // set up margins
         vis.margin = {top: 60, right: 20, bottom: 50, left: 60};
         vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
@@ -42,11 +43,6 @@ class LineVis {
             .text(vis.yAxisText)
             .attr('transform', `translate(-50,${vis.height/2})rotate(-90)`)
             .attr('text-anchor', 'middle');
-
-        /* tooltip
-        vis.tooltip = d3.select("body").append('div')
-            .attr('class', "tooltip")
-            .attr('id', 'barTooltip') */
 
         // Scales
         vis.x = d3.scaleTime()
@@ -104,6 +100,7 @@ class LineVis {
 
         let bisectDate = d3.bisector(d=>d.timestamp).left;
 
+        // set up tooltip interactions
         vis.svg.append("rect")
             .attr("width", vis.width)
             .attr("height", vis.height)
@@ -144,6 +141,7 @@ class LineVis {
             });
     }
 
+    // data wrangling for average rating vis
     wrangleAvgRatingData() {
         let vis = this;
 
@@ -154,6 +152,7 @@ class LineVis {
 
         let all_dates_daily = []
 
+        // Aggregate data by month, index it by category of products
         vis.keys.forEach(function (key) {
             let daily_data = Array.from(rollupData.get(key), ([key, value]) => ({
                 timestamp: key,
@@ -195,6 +194,7 @@ class LineVis {
         vis.filterData();
     }
 
+    // data wrangling for distribution of reviews vis
     wrangleNumReviewsData(){
         let vis = this;
 
@@ -203,6 +203,7 @@ class LineVis {
         vis.keys = d3.map(rollupData.keys(), d=>d);
         vis.data = []
 
+        // Aggregate data by month, index it by category of products
         vis.keys.forEach(function (key) {
             let daily_data = Array.from(rollupData.get(key), ([key, value]) => ({
                 timestamp: key,
@@ -234,6 +235,7 @@ class LineVis {
         vis.filterData();
     }
 
+    // filter displayData to only contain a single category based on dropdown
     filterData(){
         let vis = this;
 
@@ -264,9 +266,6 @@ class LineVis {
                 console.log("ERROR: Invalid rollupFunction value");
             }
         }
-        /*else if (selected_opt == "all"){
-            vis.displayData = vis.data;
-        }*/
         else {
             vis.displayData = vis.data.filter(elem => elem.category == selected_opt);
         }
@@ -283,8 +282,8 @@ class LineVis {
         vis.x.domain([vis.minimumDate, vis.maximumDate]);
         vis.y.domain([0, d3.max(d3.map(vis.displayData, d => d3.max(d.dates, x => x.value)))]);
 
-        var color = d3.scaleOrdinal().domain(vis.keys)//d3.map(vis.displayData, d => d.category))
-            .range(["#17ff92"]);//.range(["#17ff92", "#ff1361", "#5a87ff", "#fcf38c"]);
+        var color = d3.scaleOrdinal().domain(vis.keys)
+            .range(["#17ff92"]);
 
         // Update axis by calling the axis function
         vis.svg.select(".y-axis")
